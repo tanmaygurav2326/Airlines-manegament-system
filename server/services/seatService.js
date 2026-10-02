@@ -9,36 +9,63 @@ const seatService = {
   /**
    * Check if a specific seat is available on a flight
    */
-  isSeatAvailable: async (flightId, seatNumber) => {
-    const sql = `SELECT Status FROM AircraftSeats WHERE FlightID = :flightId AND SeatNumber = :seatNumber`;
-    const seats = await executeQuery(sql, { flightId, seatNumber });
-    if (!seats || seats.length === 0) return false;
-    return seats[0].STATUS === SEAT_STATUSES.AVAILABLE;
+  isSeatAvailable: async (flightId, seatNumber, connection = null) => {
+    const sql = `
+      SELECT S.SeatID
+      FROM Flights F
+      JOIN AircraftSeats S ON F.AircraftID = S.AircraftID
+      WHERE F.FlightID = :flightId 
+        AND S.SeatNumber = :seatNumber
+        AND S.Status = 'AVAILABLE'
+        AND NOT EXISTS (
+          SELECT 1 FROM Tickets T
+          JOIN Bookings B ON T.BookingID = B.BookingID
+          WHERE T.FlightID = :flightId 
+            AND T.SeatNumber = :seatNumber 
+            AND B.Status != 'Cancelled'
+        )
+    `;
+    const params = { flightId, seatNumber };
+    const seats = connection 
+      ? (await connection.execute(sql, params)).rows || []
+      : await executeQuery(sql, params);
+
+    return seats.length > 0;
+  },
+
+  /**
+   * Get all seats for a flight with calculated availability
+   */
+  getSeatsByFlightId: async (flightId) => {
+    const sql = `
+      SELECT 
+        S.SeatID,
+        S.SeatNumber,
+        S.Class,
+        CASE 
+          WHEN S.Status = 'MAINTENANCE' THEN 'MAINTENANCE'
+          WHEN EXISTS (
+            SELECT 1 FROM Tickets T 
+            JOIN Bookings B ON T.BookingID = B.BookingID 
+            WHERE T.FlightID = F.FlightID AND T.SeatNumber = S.SeatNumber AND B.Status != 'Cancelled'
+          ) THEN 'OCCUPIED'
+          ELSE 'AVAILABLE'
+        END AS Status
+      FROM Flights F
+      JOIN AircraftSeats S ON F.AircraftID = S.AircraftID
+      WHERE F.FlightID = :flightId
+      ORDER BY S.SeatNumber ASC
+    `;
+    return await executeQuery(sql, { flightId });
   },
 
   /**
    * Lock a seat during booking/ticket creation to prevent double-booking
    */
   lockSeat: async (flightId, seatNumber, connection = null) => {
-    const sql = `UPDATE AircraftSeats 
-                 SET Status = :newStatus 
-                 WHERE FlightID = :flightId 
-                   AND SeatNumber = :seatNumber 
-                   AND Status = :currentStatus`;
-    const params = {
-      newStatus: SEAT_STATUSES.LOCKED,
-      flightId,
-      seatNumber,
-      currentStatus: SEAT_STATUSES.AVAILABLE
-    };
+    const available = await seatService.isSeatAvailable(flightId, seatNumber, connection);
 
-    const result = connection 
-      ? await connection.execute(sql, params) 
-      : await executeQuery(sql, params);
-
-    const rowsAffected = result.rowsAffected !== undefined ? result.rowsAffected : (result.affectedRows || 0);
-
-    if (rowsAffected === 0) {
+    if (!available) {
       throw { 
         status: 409, 
         message: `Seat ${seatNumber} is no longer available`, 
@@ -53,22 +80,6 @@ const seatService = {
    * Release or unlock a seat (e.g. on booking cancellation)
    */
   unlockSeat: async (flightId, seatNumber, connection = null) => {
-    const sql = `UPDATE AircraftSeats 
-                 SET Status = :newStatus 
-                 WHERE FlightID = :flightId 
-                   AND SeatNumber = :seatNumber`;
-    const params = {
-      newStatus: SEAT_STATUSES.AVAILABLE,
-      flightId,
-      seatNumber
-    };
-
-    if (connection) {
-      await connection.execute(sql, params);
-    } else {
-      await executeQuery(sql, params);
-    }
-
     return { success: true };
   }
 };

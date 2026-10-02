@@ -3,9 +3,10 @@
 // COMPLETE: PHASES 1-5 (ALL FEATURES)
 // ============================================
 
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const { initializeDatabase } = require('./db');
 const errorHandler = require('./middleware/errorHandler');

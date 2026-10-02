@@ -1,18 +1,29 @@
-// ============================================
-// BOOKING SERVICE - Booking creation & lifecycle
-// ============================================
-
+const crypto = require('crypto');
 const { executeQuery, getConnection } = require('../db');
 const { ERROR_CODES, BOOKING_STATUSES } = require('../utils/constants');
 const seatService = require('./seatService');
+
+/**
+ * Generate unique 6-character alphanumeric booking reference (e.g. 'BK9X2A')
+ */
+function generateBookingReference() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let result = '';
+  const bytes = crypto.randomBytes(6);
+  for (let i = 0; i < 6; i++) {
+    result += chars[bytes[i] % chars.length];
+  }
+  return result;
+}
 
 const bookingService = {
   /**
    * Create a new booking
    */
-  createBooking: async (userId) => {
+  createBooking: async (params) => {
     let connection;
     try {
+      const userId = typeof params === 'object' ? params.userId : params;
       if (!userId) {
         throw { 
           status: 400, 
@@ -22,23 +33,23 @@ const bookingService = {
       }
 
       connection = await getConnection();
+      const bookingReference = generateBookingReference();
 
       await connection.execute(
-        `INSERT INTO Bookings (UserID, BookingDate, Status, TotalAmount)
-         VALUES (:userId, CURRENT_TIMESTAMP, :status, 0)`,
+        `INSERT INTO Bookings (BookingReference, UserID, BookingDate, Status)
+         VALUES (:bookingReference, :userId, SYSTIMESTAMP, :status)`,
         {
+          bookingReference,
           userId,
           status: BOOKING_STATUSES.PENDING
         }
       );
 
       const result = await connection.execute(
-        `SELECT BookingID, UserID, BookingDate, Status, TotalAmount
+        `SELECT BookingID, BookingReference, UserID, BookingDate, Status
          FROM Bookings
-         WHERE UserID = :userId
-         ORDER BY BookingDate DESC
-         FETCH FIRST 1 ROWS ONLY`,
-        { userId }
+         WHERE BookingReference = :bookingReference`,
+        { bookingReference }
       );
 
       await connection.commit();
@@ -46,18 +57,19 @@ const bookingService = {
       const row = result.rows[0];
       const booking = Array.isArray(row) ? {
         BOOKINGID: row[0],
-        USERID: row[1],
-        BOOKINGDATE: row[2],
-        STATUS: row[3],
-        TOTALAMOUNT: row[4]
+        BOOKINGREFERENCE: row[1],
+        USERID: row[2],
+        BOOKINGDATE: row[3],
+        STATUS: row[4]
       } : row;
 
       return {
         bookingId: booking.BOOKINGID || booking.BookingID,
+        bookingReference: booking.BOOKINGREFERENCE || booking.BookingReference,
         userId: booking.USERID || booking.UserID,
         bookingDate: booking.BOOKINGDATE || booking.BookingDate,
         status: booking.STATUS || booking.Status,
-        totalAmount: booking.TOTALAMOUNT || booking.TotalAmount
+        totalAmount: 0
       };
     } catch (error) {
       if (connection) {
@@ -186,8 +198,9 @@ const bookingService = {
   getBookingDetails: async (bookingId, userId) => {
     try {
       const bookings = await executeQuery(
-        `SELECT B.BookingID, B.UserID, B.BookingDate, B.Status, B.TotalAmount,
-                U.FirstName, U.LastName, U.Email
+        `SELECT B.BookingID, B.BookingReference, B.UserID, B.BookingDate, B.Status,
+                U.FirstName, U.LastName, U.Email,
+                COALESCE((SELECT SUM(TicketPrice) FROM Tickets WHERE BookingID = B.BookingID), 0) AS TotalAmount
          FROM Bookings B
          JOIN Users U ON B.UserID = U.UserID
          WHERE B.BookingID = :bookingId`,
@@ -227,10 +240,11 @@ const bookingService = {
 
       return {
         bookingId: booking.BOOKINGID,
+        bookingReference: booking.BOOKINGREFERENCE,
         userId: booking.USERID,
         bookingDate: booking.BOOKINGDATE,
         status: booking.STATUS,
-        totalAmount: booking.TOTALAMOUNT,
+        totalAmount: Number(booking.TOTALAMOUNT || 0),
         user: {
           firstName: booking.FIRSTNAME,
           lastName: booking.LASTNAME,
@@ -273,19 +287,23 @@ const bookingService = {
   getUserBookings: async (userId) => {
     try {
       const bookings = await executeQuery(
-        `SELECT BookingID, UserID, BookingDate, Status, TotalAmount
-         FROM Bookings
-         WHERE UserID = :userId
-         ORDER BY BookingDate DESC`,
+        `SELECT B.BookingID, B.BookingReference, B.UserID, B.BookingDate, B.Status,
+                COALESCE((SELECT SUM(TicketPrice) FROM Tickets WHERE BookingID = B.BookingID), 0) AS TotalAmount,
+                (SELECT COUNT(*) FROM Tickets WHERE BookingID = B.BookingID) AS TicketCount
+         FROM Bookings B
+         WHERE B.UserID = :userId
+         ORDER BY B.BookingDate DESC`,
         { userId }
       );
 
       return bookings.map(b => ({
         bookingId: b.BOOKINGID,
+        bookingReference: b.BOOKINGREFERENCE,
         userId: b.USERID,
         bookingDate: b.BOOKINGDATE,
         status: b.STATUS,
-        totalAmount: b.TOTALAMOUNT
+        totalAmount: Number(b.TOTALAMOUNT || 0),
+        ticketCount: Number(b.TICKETCOUNT || 0)
       }));
     } catch (error) {
       console.error('Get user bookings error:', error.message);

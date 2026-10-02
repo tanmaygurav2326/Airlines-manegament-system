@@ -239,15 +239,23 @@ searchFlights: async (filters) => {
         };
       }
 
-      // Get all seats
+      // Get all seats with real-time flight ticket occupancy
       const seats = await executeQuery(
         `SELECT 
           S.SeatID,
           S.SeatNumber,
           S.Class,
-          S.Status
-        FROM AircraftSeats S
-        JOIN Flights F ON S.AircraftID = F.AircraftID
+          CASE 
+            WHEN S.Status = 'MAINTENANCE' THEN 'MAINTENANCE'
+            WHEN EXISTS (
+              SELECT 1 FROM Tickets T 
+              JOIN Bookings B ON T.BookingID = B.BookingID 
+              WHERE T.FlightID = F.FlightID AND T.SeatNumber = S.SeatNumber AND B.Status != 'Cancelled'
+            ) THEN 'OCCUPIED'
+            ELSE 'AVAILABLE'
+          END AS Status
+        FROM Flights F
+        JOIN AircraftSeats S ON F.AircraftID = S.AircraftID
         WHERE F.FlightID = :flightId
         ORDER BY S.SeatNumber ASC`,
         { flightId }

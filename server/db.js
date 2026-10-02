@@ -2,8 +2,9 @@
 // ORACLE DATABASE CONNECTION & QUERY EXECUTOR
 // ============================================
 
+const path = require('path');
 const oracledb = require('oracledb');
-require('dotenv').config();
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 // Return SQL query results as JavaScript objects instead of raw arrays
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;

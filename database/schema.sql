@@ -255,6 +255,13 @@ CREATE INDEX idx_baggage_ticket ON Baggage(TicketID);
 CREATE INDEX idx_baggage_tracking ON Baggage(TrackingNumber);
 CREATE INDEX idx_baggage_status ON Baggage(Status);
 
+-- Performance & Composite Indexes
+CREATE INDEX idx_flights_search ON Flights(DepartureAirport, ArrivalAirport, DepartureTime, Status);
+CREATE INDEX idx_seats_aircraft_class ON AircraftSeats(AircraftID, Class, Status);
+CREATE INDEX idx_bookings_date ON Bookings(BookingDate);
+CREATE INDEX idx_payments_booking_status ON Payments(BookingID, TransactionStatus);
+CREATE INDEX idx_airports_name ON Airports(AirportName);
+
 INSERT INTO Airports (AirportCode, AirportName, City, Country) 
 VALUES ('JFK', 'John F. Kennedy International', 'New York', 'USA');
 
