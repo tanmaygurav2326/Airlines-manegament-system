@@ -2,6 +2,12 @@
 // AUTH SERVICE - User Authentication & Registration
 // ============================================
 
+// StaffRegistry table schema reference:
+//   StaffID     VARCHAR2(20) PRIMARY KEY
+//   IsActive    NUMBER(1) DEFAULT 1
+//   UsedByEmail VARCHAR2(255)
+// Admins are DB-seeded only — role can never be 'Admin' via registration.
+
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { executeQuery, getConnection } = require('../db');
@@ -12,12 +18,16 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
 
 const authService = {
   /**
-   * Register a new user
+   * Register a new user.
+   * Role is determined server-side only:
+   *   - staffId provided & valid in StaffRegistry → 'Staff'
+   *   - no staffId → 'Passenger'
+   *   - 'Admin' can never be assigned through registration
    */
   registerUser: async (userData) => {
     let connection;
     try {
-      const { email, password, firstName, lastName, role = USER_ROLES.PASSENGER } = userData;
+      const { email, password, firstName, lastName, staffId } = userData;
 
       if (!email || !password || !firstName || !lastName) {
         throw {
@@ -40,10 +50,38 @@ const authService = {
         };
       }
 
+      // ── Determine role from StaffRegistry (server-side only) ────────────
+      let role;
+      if (staffId) {
+        connection = await getConnection();
+
+        const staffRes = await connection.execute(
+          `SELECT StaffID, IsAssigned FROM StaffRegistry WHERE StaffID = :staffId`,
+          { staffId }
+        );
+
+        const staffRow = staffRes.rows && staffRes.rows[0];
+        const isAssigned = staffRow
+          ? (Array.isArray(staffRow) ? staffRow[1] : (staffRow.ISASSIGNED ?? staffRow.IsAssigned))
+          : null;
+
+        if (!staffRow || isAssigned !== 0) {
+          throw {
+            status: 400,
+            message: 'Invalid or already claimed Staff ID',
+            code: ERROR_CODES.INVALID_INPUT
+          };
+        }
+
+        role = 'Staff';
+      } else {
+        role = 'Passenger';
+        connection = await getConnection();
+      }
+      // ────────────────────────────────────────────────────────────────────
+
       const saltRounds = 10;
       const passwordHash = await bcrypt.hash(password, saltRounds);
-
-      connection = await getConnection();
 
       await connection.execute(
         `INSERT INTO Users (Email, PasswordHash, FirstName, LastName, Role)
@@ -58,6 +96,15 @@ const authService = {
          WHERE Email = :email`,
         { email }
       );
+
+      if (staffId && result.rows && result.rows.length > 0) {
+        const uRow = result.rows[0];
+        const uId = Array.isArray(uRow) ? uRow[0] : (uRow.USERID || uRow.UserId);
+        await connection.execute(
+          `UPDATE StaffRegistry SET IsAssigned = 1, AssignedUserID = :uId WHERE StaffID = :staffId`,
+          { uId, staffId }
+        );
+      }
 
       await connection.commit();
 

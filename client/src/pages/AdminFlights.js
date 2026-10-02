@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
+import { useCurrency } from '../context/CurrencyContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import StatusBadge from '../components/common/StatusBadge';
 import { 
@@ -13,18 +14,17 @@ const AdminFlights = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-
-  // Status update
   const [updatingId, setUpdatingId] = useState(null);
+  const { formatPrice } = useCurrency();
 
   const fetchFlights = async () => {
     setLoading(true);
     setError(null);
     try {
       const fRes = await api.get('/flights');
-      if (fRes?.data) setFlights(fRes.data);
+      if (fRes?.data) setFlights(Array.isArray(fRes.data) ? fRes.data : []);
     } catch (err) {
-      setError(err.message || 'Failed to load flight schedule');
+      setError(err.response?.data?.message || err.message || 'Failed to load flight schedule');
     } finally {
       setLoading(false);
     }
@@ -43,55 +43,59 @@ const AdminFlights = () => {
       setSuccess(`Flight ${flightId} status updated to ${newStatus}`);
       fetchFlights();
     } catch (err) {
-      setError(err.message || 'Failed to update flight status');
+      setError(err.response?.data?.message || err.message || 'Failed to update flight status');
     } finally {
       setUpdatingId(null);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#F4F5F7] text-[#172B4D] py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+        
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div>
-            <div className="flex items-center space-x-2">
-              <span className="text-xs uppercase font-bold text-blue-400 tracking-wider">
-                Fleet Management
-              </span>
-            </div>
-            <h1 className="text-3xl font-extrabold text-white mt-1">Flight Operations & Dispatch</h1>
+            <span className="text-xs uppercase font-extrabold text-[#0052CC] tracking-wider">
+              Operations Dispatch
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#091E42] mt-1">
+              Flight Schedule & Gate Management
+            </h1>
           </div>
 
           <button
             onClick={fetchFlights}
-            className="flex items-center space-x-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 px-4 py-2 rounded-xl text-xs font-semibold text-slate-200 transition"
+            className="flex items-center space-x-1.5 bg-white hover:bg-slate-50 border border-slate-300 px-4 py-2.5 rounded-xl text-xs font-bold text-[#172B4D] transition shadow-xs"
           >
-            <RefreshCw className="w-3.5 h-3.5" />
+            <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
             <span>Refresh Roster</span>
           </button>
         </div>
 
         {error && (
-          <div className="bg-rose-950/50 border border-rose-800 text-rose-300 p-4 rounded-xl flex items-center space-x-3 text-sm">
-            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+          <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl flex items-center space-x-2 text-xs animate-fade-in-up">
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
         {success && (
-          <div className="bg-emerald-950/50 border border-emerald-800 text-emerald-300 p-4 rounded-xl flex items-center space-x-3 text-sm">
-            <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+          <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-xl flex items-center space-x-2 text-xs animate-fade-in-up">
+            <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-600" />
             <span>{success}</span>
           </div>
         )}
 
         {loading ? (
-          <LoadingSpinner fullPage text="Retrieving live flight schedule from Oracle..." />
+          <div className="bg-white rounded-2xl p-12 text-center border border-slate-200 shadow-sm">
+            <LoadingSpinner text="Retrieving live flight schedule from Oracle 21c..." />
+          </div>
         ) : (
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
+          <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs">
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-slate-800/80 text-xs uppercase text-slate-400 border-b border-slate-700">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-[#F8F9FA] text-[11px] uppercase text-slate-500 font-bold border-b border-slate-200">
                   <tr>
                     <th className="py-3.5 px-4">Flight</th>
                     <th className="py-3.5 px-4">Aircraft</th>
@@ -99,28 +103,28 @@ const AdminFlights = () => {
                     <th className="py-3.5 px-4">Departure Time</th>
                     <th className="py-3.5 px-4">Arrival Time</th>
                     <th className="py-3.5 px-4">Base Fare</th>
-                    <th className="py-3.5 px-4">Current Status</th>
-                    <th className="py-3.5 px-4">Quick Status Dispatch</th>
+                    <th className="py-3.5 px-4">Status</th>
+                    <th className="py-3.5 px-4">Dispatch Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800">
+                <tbody className="divide-y divide-slate-100">
                   {flights.map((flight) => (
-                    <tr key={flight.FLIGHTID} className="hover:bg-slate-800/40 transition">
-                      <td className="py-4 px-4 font-mono font-bold text-white">
+                    <tr key={flight.FLIGHTID} className="hover:bg-[#F4F5F7] transition">
+                      <td className="py-4 px-4 font-mono font-bold text-sm text-[#091E42]">
                         {flight.FLIGHTNUMBER}
                       </td>
-                      <td className="py-4 px-4 text-slate-300 text-xs">
+                      <td className="py-4 px-4 text-slate-600">
                         {flight.AIRCRAFTMODEL || `ID: ${flight.AIRCRAFTID}`}
                       </td>
                       <td className="py-4 px-4">
-                        <div className="font-semibold text-white">
+                        <div className="font-bold text-[#091E42]">
                           {flight.DEPARTUREAIRPORT} ➔ {flight.ARRIVALAIRPORT}
                         </div>
-                        <span className="text-[11px] text-slate-400">
+                        <span className="text-[10px] text-slate-400">
                           {flight.DEPARTURECITY} to {flight.ARRIVALCITY}
                         </span>
                       </td>
-                      <td className="py-4 px-4 text-xs text-slate-300">
+                      <td className="py-4 px-4 text-slate-700">
                         {new Date(flight.DEPARTURETIME).toLocaleString([], {
                           month: 'short',
                           day: 'numeric',
@@ -128,7 +132,7 @@ const AdminFlights = () => {
                           minute: '2-digit'
                         })}
                       </td>
-                      <td className="py-4 px-4 text-xs text-slate-300">
+                      <td className="py-4 px-4 text-slate-700">
                         {new Date(flight.ARRIVALTIME).toLocaleString([], {
                           month: 'short',
                           day: 'numeric',
@@ -136,8 +140,8 @@ const AdminFlights = () => {
                           minute: '2-digit'
                         })}
                       </td>
-                      <td className="py-4 px-4 font-bold text-emerald-400 font-mono">
-                        ${flight.BASEPRICE}
+                      <td className="py-4 px-4 font-bold text-[#0052CC] font-mono">
+                        {formatPrice(flight.BASEPRICE)}
                       </td>
                       <td className="py-4 px-4">
                         <StatusBadge status={flight.STATUS} />
@@ -147,7 +151,7 @@ const AdminFlights = () => {
                           disabled={updatingId === flight.FLIGHTID}
                           value={flight.STATUS}
                           onChange={(e) => handleStatusChange(flight.FLIGHTID, e.target.value)}
-                          className="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer disabled:opacity-50"
+                          className="bg-[#F4F5F7] border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-bold text-[#172B4D] focus:outline-none focus:border-[#0052CC]"
                         >
                           <option value="Scheduled">Scheduled</option>
                           <option value="Delayed">Delayed</option>
@@ -163,6 +167,7 @@ const AdminFlights = () => {
             </div>
           </div>
         )}
+
       </div>
     </div>
   );

@@ -26,6 +26,12 @@ router.post('/', authMiddleware, bookingController.createBooking);
 router.get('/user/my-bookings', authMiddleware, bookingController.getUserBookings);
 
 /**
+ * GET /api/bookings/lookup/:reference
+ * Public PNR / reference lookup
+ */
+router.get('/lookup/:reference', bookingController.lookupBooking);
+
+/**
  * GET /api/bookings/:bookingId
  * Get booking details
  */

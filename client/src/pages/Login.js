@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Plane, LogIn, AlertCircle, KeyRound, Mail } from 'lucide-react';
+import { 
+  LogIn, 
+  AlertCircle, 
+  KeyRound, 
+  Mail,
+  ShieldCheck 
+} from 'lucide-react';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import logoImg from '../assets/logo.jpg';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -24,44 +31,47 @@ const Login = () => {
       await login(email.trim(), password);
       navigate(redirectUrl);
     } catch (err) {
-      setError(err.message || 'Login failed. Please check your credentials.');
+      setError(err.response?.data?.message || err.message || 'Login failed. Please verify your email and password.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleQuickLogin = (demoEmail, demoPass) => {
-    setEmail(demoEmail);
-    setPassword(demoPass);
-  };
-
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#F4F5F7] text-[#172B4D] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-6">
+        
+        {/* Brand Header */}
         <div className="text-center space-y-2">
-          <div className="bg-blue-600 p-3 rounded-2xl w-fit mx-auto shadow-lg shadow-blue-600/30">
-            <Plane className="w-8 h-8 text-white" />
-          </div>
-          <h2 className="text-3xl font-extrabold text-white tracking-tight">
-            Welcome Back
+          <img 
+            src={logoImg} 
+            alt="Enum Airways" 
+            className="h-16 w-16 mx-auto rounded-2xl object-cover shadow-sm border border-slate-200" 
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = '/logo.jpg';
+            }}
+          />
+          <h2 className="text-3xl font-extrabold text-[#091E42] tracking-tight">
+            Sign In to Enum Airways
           </h2>
-          <p className="text-xs text-slate-400">
-            Sign in to manage flights, view bookings, and download boarding passes.
+          <p className="text-xs text-slate-500">
+            Access your bookings, select seating, and manage your travel itinerary.
           </p>
         </div>
 
         {error && (
-          <div className="bg-rose-950/50 border border-rose-800 text-rose-300 p-4 rounded-xl flex items-center space-x-3 text-sm">
+          <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl flex items-center space-x-3 text-xs animate-fade-in-up">
             <AlertCircle className="w-5 h-5 flex-shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-6">
+        <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm space-y-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5 flex items-center">
-                <Mail className="w-3.5 h-3.5 mr-1 text-blue-400" />
+              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5 flex items-center">
+                <Mail className="w-3.5 h-3.5 mr-1 text-[#0052CC]" />
                 Email Address
               </label>
               <input
@@ -70,13 +80,13 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your.email@example.com"
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-[#F4F5F7] border border-slate-300 rounded-xl px-4 py-3 text-[#091E42] text-sm focus:outline-none focus:ring-2 focus:ring-[#0052CC] focus:bg-white"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5 flex items-center">
-                <KeyRound className="w-3.5 h-3.5 mr-1 text-blue-400" />
+              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5 flex items-center">
+                <KeyRound className="w-3.5 h-3.5 mr-1 text-[#0052CC]" />
                 Password
               </label>
               <input
@@ -85,56 +95,39 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-[#F4F5F7] border border-slate-300 rounded-xl px-4 py-3 text-[#091E42] text-sm focus:outline-none focus:ring-2 focus:ring-[#0052CC] focus:bg-white"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-blue-600/30 transition duration-200 disabled:opacity-50"
+              className="w-full flex items-center justify-center space-x-2 bg-[#0052CC] hover:bg-[#003A8C] text-white font-extrabold py-3.5 px-4 rounded-xl shadow-md transition duration-150 disabled:opacity-50 active:scale-95"
             >
               {loading ? (
                 <LoadingSpinner text="Signing in..." />
               ) : (
                 <>
                   <LogIn className="w-4 h-4" />
-                  <span>Log In</span>
+                  <span>Sign In</span>
                 </>
               )}
             </button>
           </form>
 
-          {/* Quick Demo Logins */}
-          <div className="pt-4 border-t border-slate-800 space-y-2">
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider text-center">
-              Quick Test Autofill
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('admin@airline.com', 'admin123')}
-                className="bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 py-1.5 px-2 rounded-lg text-xs font-medium transition"
-              >
-                Admin (admin@airline.com)
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('john.doe@example.com', 'passenger123')}
-                className="bg-slate-800 hover:bg-slate-700 text-blue-300 border border-slate-700 py-1.5 px-2 rounded-lg text-xs font-medium transition"
-              >
-                Passenger (john.doe)
-              </button>
-            </div>
+          <div className="pt-4 border-t border-slate-100 flex items-center justify-center text-[11px] text-slate-500 gap-1.5">
+            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <span>Encrypted & Secure Session</span>
           </div>
         </div>
 
-        <p className="text-center text-xs text-slate-400">
-          Don't have an account?{' '}
-          <Link to="/register" className="text-blue-400 font-semibold hover:underline">
+        <p className="text-center text-xs text-slate-500">
+          New to Enum Airways?{' '}
+          <Link to="/register" className="text-[#0052CC] font-bold hover:underline">
             Register for Free
           </Link>
         </p>
+
       </div>
     </div>
   );

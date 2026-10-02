@@ -12,42 +12,46 @@ const authController = {
    */
   register: async (req, res, next) => {
     try {
-      const { FirstName, LastName, Email, Password, ConfirmPassword } = req.body;
+      const firstName = req.body.firstName || req.body.FirstName;
+      const lastName = req.body.lastName || req.body.LastName;
+      const email = req.body.email || req.body.Email;
+      const password = req.body.password || req.body.Password;
+      const staffId = req.body.staffId || req.body.StaffID;
 
       // Validate required fields
-      if (!FirstName || !LastName || !Email || !Password || !ConfirmPassword) {
-        const response = ApiResponse.validationError('FirstName, LastName, Email, Password, and ConfirmPassword are required');
+      if (!firstName || !lastName || !email || !password) {
+        const response = ApiResponse.validationError('First name, last name, email, and password are required');
         return res.status(response.statusCode).json(response.body);
       }
 
-      // Check password confirmation
-      if (Password !== ConfirmPassword) {
+      // If confirmPassword is provided, verify match
+      const confirmPassword = req.body.confirmPassword || req.body.ConfirmPassword;
+      if (confirmPassword && password !== confirmPassword) {
         const response = ApiResponse.validationError('Passwords do not match');
         return res.status(response.statusCode).json(response.body);
       }
 
       // Register user
-      const newUser = await authService.registerUser({
-        FirstName,
-        LastName,
-        Email,
-        Password
+      const result = await authService.registerUser({
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.trim().toLowerCase(),
+        password,
+        staffId: staffId ? staffId.trim().toUpperCase() : undefined
       });
 
       const response = ApiResponse.success(
         201,
-        newUser,
+        result,
         'User registered successfully'
       );
       res.status(response.statusCode).json(response.body);
     } catch (error) {
-      // Check if error is a custom application error
       if (error.status) {
         next(error);
       } else {
-        // Log unexpected errors
         console.error('Register error:', error);
-        next({ status: 500, message: 'Registration failed', code: 'SERVER_ERROR' });
+        next({ status: 500, message: error.message || 'Registration failed', code: 'SERVER_ERROR' });
       }
     }
   },
@@ -58,27 +62,21 @@ const authController = {
    */
   login: async (req, res, next) => {
     try {
-      const { Email, Password } = req.body;
+      const email = req.body.email || req.body.Email;
+      const password = req.body.password || req.body.Password;
 
       // Validate required fields
-      if (!Email || !Password) {
+      if (!email || !password) {
         const response = ApiResponse.validationError('Email and Password are required');
         return res.status(response.statusCode).json(response.body);
       }
 
       // Login user
-      const user = await authService.loginUser(Email, Password);
+      const result = await authService.loginUser(email.trim().toLowerCase(), password);
 
       const response = ApiResponse.success(
         200,
-        {
-          userId: user.userId,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          role: user.role,
-          token: user.token
-        },
+        result,
         'Login successful'
       );
       res.status(response.statusCode).json(response.body);
@@ -87,7 +85,7 @@ const authController = {
         next(error);
       } else {
         console.error('Login error:', error);
-        next({ status: 500, message: 'Login failed', code: 'SERVER_ERROR' });
+        next({ status: 500, message: error.message || 'Login failed', code: 'SERVER_ERROR' });
       }
     }
   },

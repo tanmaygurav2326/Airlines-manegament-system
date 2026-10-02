@@ -2,54 +2,161 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="icon" href="%PUBLIC_URL%/logo.jpg" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
+    <meta name="theme-color" content="#0052CC" />
+    <meta name="description" content="Enum Airways — India's premier airline. Book flights, manage bookings, and track baggage with ease." />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo.jpg" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+    <title>Enum Airways</title>
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>SkyWings Airways - Airline Management System</title>
+    <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Manrope (Headings/Display) + Inter (Body/UI) + JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
     <style>
-      body {
-        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      /* =============================================
+         ENUM AIRWAYS — DESIGN TOKENS
+         Primary: Signal Blue #0052CC
+         Surface: Porcelain #F4F5F7
+         Background: #F8F9FA
+      ============================================= */
+      :root {
+        --ea-blue:        #0052CC;
+        --ea-blue-dark:   #003A8C;
+        --ea-blue-light:  #2684FF;
+        --ea-blue-soft:   #DEEBFF;
+        --ea-navy:        #091E42;
+        --ea-ink:         #172B4D;
+        --ea-porcelain:   #F4F5F7;
+        --ea-surface:     #F8F9FA;
+        --ea-white:       #FFFFFF;
+        --ea-slate:       #6B778C;
+        --ea-slate-light: #8993A4;
+        --ea-border:      #DFE1E6;
+        --ea-border-dark: #C1C7D0;
+        --ea-green:       #00875A;
+        --ea-green-light: #E3FCEF;
+        --ea-amber:       #FF8B00;
+        --ea-amber-light: #FFF0B3;
+        --ea-red:         #DE350B;
+        --ea-red-light:   #FFEBE6;
       }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background-color: var(--ea-surface);
+        color: var(--ea-ink);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        letter-spacing: -0.01em;
+      }
+
+      /* Manrope for Headings & Display Elements */
+      h1, h2, h3, .font-display {
+        font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        letter-spacing: -0.025em;
+      }
+
+      /* Natural Responsive Scaling with clamp() - avoid heavy 800/900 */
+      h1 {
+        font-size: clamp(2rem, 3.5vw + 0.75rem, 3.25rem);
+        line-height: 1.15;
+        font-weight: 700;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      h2 {
+        font-size: clamp(1.4rem, 2vw + 0.5rem, 2rem);
+        line-height: 1.25;
+        font-weight: 700;
+      }
+
+      h3 {
+        font-size: clamp(1.15rem, 1.2vw + 0.4rem, 1.4rem);
+        line-height: 1.35;
+        font-weight: 600;
+      }
+
       .font-mono {
-        font-family: 'JetBrains Mono', monospace;
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: var(--ea-porcelain); }
+      ::-webkit-scrollbar-thumb { background: var(--ea-border-dark); border-radius: 3px; }
+      ::-webkit-scrollbar-thumb:hover { background: var(--ea-slate-light); }
+
+      /* Focus Visible */
+      *:focus-visible {
+        outline: 2px solid var(--ea-blue);
+        outline-offset: 2px;
+      }
+
+      /* Custom Date Input */
+      input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(28%) sepia(84%) saturate(1000%) hue-rotate(205deg);
+        cursor: pointer;
+      }
+
+      /* Range slider */
+      input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 4px;
+        border-radius: 2px;
+        background: var(--ea-border);
+        cursor: pointer;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--ea-blue);
+        border: 2px solid white;
+        box-shadow: 0 1px 4px rgba(0,82,204,0.4);
+      }
+
+      /* Animations */
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes shimmer {
+        0%   { background-position: -400px 0; }
+        100% { background-position: 400px 0; }
+      }
+      .animate-fade-in-up {
+        animation: fadeInUp 0.4s ease-out both;
+      }
+      .skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 400px 100%;
+        animation: shimmer 1.4s infinite;
+      }
+
+      /* Selection color */
+      ::selection {
+        background: var(--ea-blue);
+        color: white;
       }
     </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>

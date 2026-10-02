@@ -36,12 +36,35 @@ const flightController = {
    */
   searchFlights: async (req, res, next) => {
     try {
-      const { from, to, date, returnDate, passengers, class: cabinClass } = req.query;
+      const { from, to, date, returnDate, passengers, adt, chd, inf, um, class: cabinClass } = req.query;
 
       // Validate required query params
       if (!from || !to || !date) {
         const response = ApiResponse.validationError('Query parameters required: from, to, date');
         return res.status(response.statusCode).json(response.body);
+      }
+
+      // Enforce passenger rules on backend
+      if (adt !== undefined || chd !== undefined || inf !== undefined || um !== undefined) {
+        const numAdt = parseInt(adt) || 0;
+        const numChd = parseInt(chd) || 0;
+        const numInf = parseInt(inf) || 0;
+        const numUm = parseInt(um) || 0;
+
+        if (numAdt + numChd + numInf + numUm < 1) {
+          const response = ApiResponse.validationError('At least 1 passenger must be selected.');
+          return res.status(response.statusCode).json(response.body);
+        }
+
+        if (numUm > 0 && (numAdt > 0 || numChd > 0 || numInf > 0)) {
+          const response = ApiResponse.validationError('Unaccompanied Minor (UM/UNMR) cannot travel with Adults, Children, or Infants on the same reservation.');
+          return res.status(response.statusCode).json(response.body);
+        }
+
+        if (numInf > numAdt) {
+          const response = ApiResponse.validationError('The number of infants (INF) cannot exceed the number of accompanying adults (ADT). Every infant must be associated with an adult.');
+          return res.status(response.statusCode).json(response.body);
+        }
       }
 
       const filters = {

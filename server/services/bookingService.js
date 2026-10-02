@@ -313,6 +313,34 @@ const bookingService = {
         code: ERROR_CODES.DATABASE_ERROR 
       };
     }
+  },
+
+  /**
+   * Look up booking by PNR / BookingReference (public)
+   */
+  getBookingByReference: async (reference) => {
+    try {
+      const ref = (reference || '').trim().toUpperCase();
+      const bookings = await executeQuery(
+        `SELECT BookingID FROM Bookings WHERE UPPER(BookingReference) = :ref`,
+        { ref }
+      );
+      if (!bookings || bookings.length === 0) {
+        throw {
+          status: 404,
+          message: `No booking found for reference '${ref}'`,
+          code: ERROR_CODES.NOT_FOUND
+        };
+      }
+      return await bookingService.getBookingDetails(bookings[0].BOOKINGID);
+    } catch (err) {
+      if (err.status) throw err;
+      throw {
+        status: 500,
+        message: 'Failed to look up booking reference',
+        code: ERROR_CODES.DATABASE_ERROR
+      };
+    }
   }
 };
 

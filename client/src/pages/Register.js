@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Plane, UserPlus, AlertCircle, Mail, KeyRound } from 'lucide-react';
+import { 
+  Plane, 
+  UserPlus, 
+  AlertCircle, 
+  Mail, 
+  KeyRound, 
+  Briefcase 
+} from 'lucide-react';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import logoImg from '../assets/logo.jpg';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -12,7 +20,8 @@ const Register = () => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('Passenger');
+  const [accountType, setAccountType] = useState('Passenger'); // 'Passenger' | 'Staff'
+  const [staffId, setStaffId] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -21,92 +30,166 @@ const Register = () => {
     setLoading(true);
     setError(null);
     try {
-      await register({
+      const payload = {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         email: email.trim(),
-        password,
-        role
-      });
+        password
+      };
+
+      if (accountType === 'Staff') {
+        if (!staffId.trim()) {
+          throw new Error('Staff ID is required for Airline Staff registration.');
+        }
+        payload.staffId = staffId.trim().toUpperCase();
+      }
+
+      await register(payload);
       navigate('/');
     } catch (err) {
-      setError(err.message || 'Registration failed. Please try again.');
+      setError(err.response?.data?.message || err.message || 'Registration failed. Please verify your details.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#F4F5F7] text-[#172B4D] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-6">
+        
+        {/* Brand Header */}
         <div className="text-center space-y-2">
-          <div className="bg-blue-600 p-3 rounded-2xl w-fit mx-auto shadow-lg shadow-blue-600/30">
-            <Plane className="w-8 h-8 text-white" />
-          </div>
-          <h2 className="text-3xl font-extrabold text-white tracking-tight">
+          <img 
+            src={logoImg} 
+            alt="Enum Airways" 
+            className="h-16 w-16 mx-auto rounded-2xl object-cover shadow-sm border border-slate-200" 
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = '/logo.jpg';
+            }}
+          />
+          <h2 className="text-3xl font-extrabold text-[#091E42] tracking-tight">
             Create an Account
           </h2>
-          <p className="text-xs text-slate-400">
-            Join SkyWings Airways for personalized ticketing and baggage monitoring.
+          <p className="text-xs text-slate-500">
+            Join Enum Airways for instant flight bookings, seat reservations, and digital boarding passes.
           </p>
         </div>
 
         {error && (
-          <div className="bg-rose-950/50 border border-rose-800 text-rose-300 p-4 rounded-xl flex items-center space-x-3 text-sm">
+          <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl flex items-center space-x-3 text-xs animate-fade-in-up">
             <AlertCircle className="w-5 h-5 flex-shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl">
+        <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
           <form onSubmit={handleSubmit} className="space-y-4">
+            
+            {/* Account Type Selector */}
+            <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                Account Type
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setAccountType('Passenger')}
+                  className={`py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                    accountType === 'Passenger'
+                      ? 'bg-[#DEEBFF] text-[#0052CC] border-2 border-[#0052CC]'
+                      : 'bg-[#F4F5F7] text-slate-600 border border-slate-200'
+                  }`}
+                >
+                  <Plane className="w-3.5 h-3.5" />
+                  <span>Passenger</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setAccountType('Staff')}
+                  className={`py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                    accountType === 'Staff'
+                      ? 'bg-amber-100 text-amber-900 border-2 border-amber-600'
+                      : 'bg-[#F4F5F7] text-slate-600 border border-slate-200'
+                  }`}
+                >
+                  <Briefcase className="w-3.5 h-3.5" />
+                  <span>Airline Staff</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Staff ID Input (conditional) */}
+            {accountType === 'Staff' && (
+              <div className="bg-amber-50 p-3.5 rounded-xl border border-amber-200 space-y-1.5 animate-fade-in-up">
+                <label className="block text-xs font-bold text-amber-900 uppercase tracking-wider">
+                  Official Staff ID
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. EA-STF-101"
+                  value={staffId}
+                  onChange={(e) => setStaffId(e.target.value.toUpperCase())}
+                  className="w-full bg-white border border-amber-300 rounded-lg px-3 py-2 text-xs font-mono font-bold text-[#091E42] focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+                <p className="text-[11px] text-amber-700">
+                  Enter your pre-assigned Enum Airways staff identification code.
+                </p>
+              </div>
+            )}
+
+            {/* First and Last Name */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">
                   First Name
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Jane"
+                  placeholder="Rahul"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full bg-[#F4F5F7] border border-slate-300 rounded-xl px-3.5 py-2.5 text-[#091E42] text-sm focus:outline-none focus:ring-2 focus:ring-[#0052CC] focus:bg-white"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">
                   Last Name
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Doe"
+                  placeholder="Sharma"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full bg-[#F4F5F7] border border-slate-300 rounded-xl px-3.5 py-2.5 text-[#091E42] text-sm focus:outline-none focus:ring-2 focus:ring-[#0052CC] focus:bg-white"
                 />
               </div>
             </div>
 
+            {/* Email */}
             <div>
-              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1 flex items-center">
-                <Mail className="w-3.5 h-3.5 mr-1 text-blue-400" />
+              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1 flex items-center">
+                <Mail className="w-3.5 h-3.5 mr-1 text-[#0052CC]" />
                 Email Address
               </label>
               <input
                 type="email"
                 required
-                placeholder="jane.doe@example.com"
+                placeholder="rahul.sharma@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-[#F4F5F7] border border-slate-300 rounded-xl px-3.5 py-2.5 text-[#091E42] text-sm focus:outline-none focus:ring-2 focus:ring-[#0052CC] focus:bg-white"
               />
             </div>
 
+            {/* Password */}
             <div>
-              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1 flex items-center">
-                <KeyRound className="w-3.5 h-3.5 mr-1 text-blue-400" />
+              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1 flex items-center">
+                <KeyRound className="w-3.5 h-3.5 mr-1 text-[#0052CC]" />
                 Password
               </label>
               <input
@@ -115,48 +198,34 @@ const Register = () => {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-[#F4F5F7] border border-slate-300 rounded-xl px-3.5 py-2.5 text-[#091E42] text-sm focus:outline-none focus:ring-2 focus:ring-[#0052CC] focus:bg-white"
               />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-                Account Role
-              </label>
-              <select
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="Passenger">Passenger</option>
-                <option value="Staff">Flight Staff</option>
-                <option value="Admin">Administrator</option>
-              </select>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-blue-600/30 transition duration-200 disabled:opacity-50 mt-2"
+              className="w-full flex items-center justify-center space-x-2 bg-[#0052CC] hover:bg-[#003A8C] text-white font-extrabold py-3.5 px-4 rounded-xl shadow-md transition duration-150 disabled:opacity-50 mt-2 active:scale-95"
             >
               {loading ? (
                 <LoadingSpinner text="Creating account..." />
               ) : (
                 <>
                   <UserPlus className="w-4 h-4" />
-                  <span>Create Account</span>
+                  <span>Complete Registration</span>
                 </>
               )}
             </button>
           </form>
         </div>
 
-        <p className="text-center text-xs text-slate-400">
+        <p className="text-center text-xs text-slate-500">
           Already have an account?{' '}
-          <Link to="/login" className="text-blue-400 font-semibold hover:underline">
-            Log In
+          <Link to="/login" className="text-[#0052CC] font-bold hover:underline">
+            Sign In here
           </Link>
         </p>
+
       </div>
     </div>
   );

@@ -15,10 +15,10 @@ import {
 } from 'lucide-react';
 
 const MILESTONES = [
-  { key: 'Checked-In', label: 'Checked-In', desc: 'Received at Departure Counter', icon: PackageCheck },
-  { key: 'In-Transit', label: 'In-Transit', desc: 'Screened & Loaded to Cart', icon: Clock },
-  { key: 'On-Plane', label: 'On-Plane', desc: 'Secured in Cargo Hold', icon: PlaneTakeoff },
-  { key: 'Ready-for-Pickup', label: 'Ready for Pickup', desc: 'Arrived at Carousel Baggage Claim', icon: CheckCircle2 }
+  { key: 'Checked-In', label: 'Checked-In', desc: 'Received at Airport Bag Drop', icon: PackageCheck },
+  { key: 'In-Transit', label: 'In-Transit', desc: 'Security Screened & Loaded to Tarmac Dolly', icon: Clock },
+  { key: 'On-Plane', label: 'On-Plane', desc: 'Secured inside Aircraft Cargo Hold', icon: PlaneTakeoff },
+  { key: 'Ready-for-Pickup', label: 'Ready for Pickup', desc: 'Discharged on Terminal Baggage Carousel', icon: CheckCircle2 }
 ];
 
 const BaggageTracker = () => {
@@ -43,7 +43,7 @@ const BaggageTracker = () => {
       }
     } catch (err) {
       setBaggage(null);
-      setError(err.message || 'Tracking ID not found in airline records');
+      setError(err.response?.data?.message || err.message || 'Tracking ID not found in airline records');
     } finally {
       setLoading(false);
     }
@@ -62,140 +62,135 @@ const BaggageTracker = () => {
     fetchBaggage(trackingNumber.trim());
   };
 
-  const getActiveStepIndex = (status) => {
+  const getStepProgressIndex = (status) => {
     if (!status) return 0;
-    const idx = MILESTONES.findIndex(
-      (m) => m.key.toLowerCase() === status.toLowerCase()
-    );
+    const idx = MILESTONES.findIndex((m) => m.key.toLowerCase() === status.toLowerCase());
     return idx === -1 ? 0 : idx;
   };
 
-  const currentStepIdx = baggage ? getActiveStepIndex(baggage.STATUS) : 0;
+  const currentStep = baggage ? getStepProgressIndex(baggage.STATUS) : 0;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="min-h-screen bg-[#F4F5F7] text-[#172B4D] py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto space-y-6">
+        
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className="w-14 h-14 bg-amber-500/20 text-amber-400 rounded-2xl flex items-center justify-center mx-auto border border-amber-500/30">
-            <Luggage className="w-7 h-7" />
+          <div className="bg-[#DEEBFF] text-[#0052CC] p-3 rounded-2xl w-fit mx-auto border border-blue-200">
+            <Luggage className="w-8 h-8" />
           </div>
-          <h1 className="text-3xl font-extrabold text-white">Live Baggage Tracking</h1>
-          <p className="text-slate-400 text-sm max-w-md mx-auto">
-            Monitor real-time handling milestones and cargo status for your checked baggage.
+          <h1 className="text-3xl font-extrabold text-[#091E42]">Live Baggage Tracking</h1>
+          <p className="text-xs text-slate-500 max-w-md mx-auto">
+            Scan checkpoints continuously stream baggage updates from origin check-in counter to destination carousel claim.
           </p>
         </div>
 
-        {/* Search Bar */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl">
+        {/* Search Input Card */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
           <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
-            <div className="relative flex-1">
-              <Search className="w-5 h-5 text-slate-400 absolute left-3.5 top-1/2 transform -translate-y-1/2" />
+            <div className="flex-1 relative">
               <input
                 type="text"
                 required
-                placeholder="Enter Tag / Tracking Number (e.g. TRK-AA101-001)"
+                placeholder="Enter Baggage Barcode / Tracking ID (e.g. TRK-1001-A)"
                 value={trackingNumber}
-                onChange={(e) => setTrackingNumber(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                onChange={(e) => setTrackingNumber(e.target.value.toUpperCase())}
+                className="w-full bg-[#F4F5F7] border border-slate-300 rounded-xl px-4 py-3.5 font-mono font-bold uppercase text-sm text-[#091E42] focus:ring-2 focus:ring-[#0052CC] focus:outline-none focus:bg-white"
               />
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-8 py-3 rounded-xl text-sm transition shadow-lg shadow-amber-500/20"
+              className="bg-[#0052CC] hover:bg-[#003A8C] text-white font-bold px-8 py-3.5 rounded-xl transition shadow-md flex items-center justify-center space-x-2"
             >
-              Track Luggage
+              <Search className="w-4 h-4" />
+              <span>{loading ? 'Scanning...' : 'Track Bag'}</span>
             </button>
           </form>
+
+          {error && (
+            <div className="mt-4 bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl text-xs flex items-center space-x-2">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
         </div>
 
-        {/* Result Area */}
-        {loading && <LoadingSpinner fullPage text="Locating baggage tag across flight hubs..." />}
-
-        {error && (
-          <div className="bg-rose-950/40 border border-rose-800 text-rose-300 p-6 rounded-2xl text-center space-y-2">
-            <AlertCircle className="w-8 h-8 mx-auto text-rose-400" />
-            <h4 className="font-bold">Tracking Record Not Found</h4>
-            <p className="text-xs text-rose-400">{error}</p>
+        {loading && (
+          <div className="bg-white rounded-2xl p-12 text-center border border-slate-200 shadow-sm">
+            <LoadingSpinner text="Retrieving baggage tracking records..." />
           </div>
         )}
 
-        {baggage && (
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-8 shadow-2xl">
+        {baggage && !loading && (
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8 animate-fade-in-up">
+            
             {/* Bag Info Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-6">
               <div>
-                <span className="text-xs uppercase font-bold text-slate-400">Tracking Code</span>
-                <p className="text-2xl font-mono font-extrabold text-white">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                  Baggage Barcode
+                </span>
+                <span className="font-mono text-2xl sm:text-3xl font-extrabold text-[#0052CC]">
                   {baggage.TRACKINGNUMBER}
+                </span>
+                <p className="text-xs text-slate-500 mt-1">
+                  Weight: <span className="font-bold text-[#091E42]">{baggage.WEIGHTKG || 15} kg</span>
                 </p>
               </div>
 
-              <div className="flex items-center space-x-6">
-                <div>
-                  <span className="text-xs uppercase font-bold text-slate-400">Weight</span>
-                  <p className="text-lg font-bold text-white">{baggage.WEIGHTKG} kg</p>
-                </div>
-                <div>
-                  <span className="text-xs uppercase font-bold text-slate-400">Current Status</span>
-                  <div className="mt-1">
-                    <StatusBadge status={baggage.STATUS} />
-                  </div>
-                </div>
+              <div className="text-right">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                  Current Status
+                </span>
+                <StatusBadge status={baggage.STATUS} />
               </div>
             </div>
 
-            {/* Stepper Timeline */}
-            <div className="py-4">
-              <div className="relative">
-                {/* Connecting Progress Line */}
-                <div className="hidden sm:block absolute top-1/2 left-0 right-0 h-1 bg-slate-800 -translate-y-1/2 z-0">
-                  <div
-                    className="h-full bg-amber-500 transition-all duration-500"
-                    style={{
-                      width: `${(currentStepIdx / (MILESTONES.length - 1)) * 100}%`
-                    }}
-                  ></div>
-                </div>
+            {/* Visual Milestones Stepper */}
+            <div className="space-y-4">
+              <h3 className="font-bold text-xs uppercase tracking-wider text-slate-500">
+                Handling Pipeline Checkpoints
+              </h3>
 
-                {/* Milestone Nodes */}
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 relative z-10">
-                  {MILESTONES.map((m, idx) => {
-                    const isCompleted = idx <= currentStepIdx;
-                    const isCurrent = idx === currentStepIdx;
-                    const IconComp = m.icon;
+              <div className="relative">
+                {/* Connecting Line */}
+                <div className="hidden sm:block absolute top-1/2 left-0 right-0 h-1 bg-slate-200 -translate-y-1/2 z-0" />
+
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 relative z-10">
+                  {MILESTONES.map((step, idx) => {
+                    const isPassed = idx <= currentStep;
+                    const isCurrent = idx === currentStep;
+                    const IconComp = step.icon;
 
                     return (
                       <div
-                        key={m.key}
-                        className="flex sm:flex-col items-center sm:text-center space-x-4 sm:space-x-0 space-y-0 sm:space-y-3"
+                        key={step.key}
+                        className={`bg-white rounded-2xl p-4 border transition-all ${
+                          isCurrent
+                            ? 'border-[#0052CC] ring-2 ring-[#0052CC]/20 shadow-md'
+                            : isPassed
+                            ? 'border-emerald-200 bg-emerald-50/30'
+                            : 'border-slate-200 opacity-60'
+                        }`}
                       >
-                        <div
-                          className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
-                            isCurrent
-                              ? 'bg-amber-500 text-slate-950 font-bold ring-4 ring-amber-500/30 scale-110 shadow-lg'
-                              : isCompleted
-                              ? 'bg-emerald-600 text-white shadow'
-                              : 'bg-slate-800 text-slate-500 border border-slate-700'
-                          }`}
-                        >
-                          <IconComp className="w-5 h-5" />
-                        </div>
-
-                        <div>
-                          <p
-                            className={`text-sm font-bold ${
-                              isCurrent
-                                ? 'text-amber-400'
-                                : isCompleted
-                                ? 'text-white'
-                                : 'text-slate-500'
+                        <div className="flex sm:flex-col items-center sm:text-center gap-3">
+                          <div
+                            className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                              isPassed
+                                ? 'bg-[#0052CC] text-white shadow-sm'
+                                : 'bg-[#F4F5F7] text-slate-400'
                             }`}
                           >
-                            {m.label}
-                          </p>
-                          <p className="text-[11px] text-slate-400 mt-0.5">{m.desc}</p>
+                            <IconComp className="w-5 h-5" />
+                          </div>
+
+                          <div>
+                            <p className="font-bold text-xs text-[#091E42]">{step.label}</p>
+                            <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                              {step.desc}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     );
@@ -204,20 +199,35 @@ const BaggageTracker = () => {
               </div>
             </div>
 
-            {/* Associated Flight & Ticket details if available */}
+            {/* Associated Flight & Passenger Segment */}
             {baggage.FLIGHTNUMBER && (
-              <div className="bg-slate-800/60 border border-slate-700 rounded-2xl p-4 flex items-center justify-between text-xs">
-                <div className="flex items-center space-x-2">
-                  <Plane className="w-4 h-4 text-blue-400" />
-                  <span className="font-semibold text-white">Flight {baggage.FLIGHTNUMBER}</span>
+              <div className="bg-[#F8F9FA] rounded-2xl p-5 border border-slate-200 flex flex-wrap items-center justify-between text-xs gap-4">
+                <div className="flex items-center space-x-3">
+                  <div className="bg-[#DEEBFF] text-[#0052CC] p-2 rounded-xl">
+                    <Plane className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="font-bold text-[#091E42] block">
+                      Flight {baggage.FLIGHTNUMBER}
+                    </span>
+                    <span className="text-slate-500">
+                      {baggage.DEPARTUREAIRPORT} ➔ {baggage.ARRIVALAIRPORT}
+                    </span>
+                  </div>
                 </div>
-                <div className="text-slate-400">
-                  Passenger: <span className="text-slate-200 font-medium">{baggage.PASSENGERNAME || 'Verified'}</span>
-                </div>
+
+                {baggage.CAROUSEL && (
+                  <div className="text-right">
+                    <span className="text-slate-400 block text-[11px]">Carousel Claim</span>
+                    <span className="font-bold text-base text-[#0052CC]">{baggage.CAROUSEL}</span>
+                  </div>
+                )}
               </div>
             )}
+
           </div>
         )}
+
       </div>
     </div>
   );

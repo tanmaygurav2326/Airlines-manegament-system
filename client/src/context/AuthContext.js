@@ -36,26 +36,32 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const res = await api.post('/auth/login', { email, password });
-    if (res?.data?.token && res?.data?.user) {
-      setToken(res.data.token);
-      setUser(res.data.user);
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
-      return res.data.user;
+    const payload = res?.data || res;
+    const token = payload?.token || res?.token;
+    const user = payload?.user || res?.user;
+    if (token && user) {
+      setToken(token);
+      setUser(user);
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      return user;
     }
-    throw new Error('Invalid login response');
+    throw new Error('Invalid login response from server');
   };
 
   const register = async (userData) => {
     const res = await api.post('/auth/register', userData);
-    if (res?.data?.token && res?.data?.user) {
-      setToken(res.data.token);
-      setUser(res.data.user);
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
-      return res.data.user;
+    const payload = res?.data || res;
+    const token = payload?.token || res?.token;
+    const user = payload?.user || res?.user;
+    if (token && user) {
+      setToken(token);
+      setUser(user);
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      return user;
     }
-    return res.data;
+    return user || payload;
   };
 
   const logout = () => {

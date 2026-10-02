@@ -3,17 +3,22 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { 
+  User, 
   Mail, 
   Save, 
   CheckCircle2, 
-  AlertCircle
+  AlertCircle,
+  ShieldCheck,
+  Award,
+  Phone,
+  Globe
 } from 'lucide-react';
 
 const Profile = () => {
   const { user } = useAuth();
 
   const [passportNumber, setPassportNumber] = useState('');
-  const [nationality, setNationality] = useState('');
+  const [nationality, setNationality] = useState('India');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [frequentFlyerNumber, setFrequentFlyerNumber] = useState('');
 
@@ -28,12 +33,12 @@ const Profile = () => {
         const res = await api.get('/passengers/me');
         if (res?.data) {
           setPassportNumber(res.data.PASSPORTNUMBER || '');
-          setNationality(res.data.NATIONALITY || '');
+          setNationality(res.data.NATIONALITY || 'India');
           setPhoneNumber(res.data.PHONENUMBER || '');
           setFrequentFlyerNumber(res.data.FREQUENTFLYERNUMBER || '');
         }
       } catch (err) {
-        // May not have a passenger record yet
+        // Passenger record might not exist yet
       } finally {
         setLoading(false);
       }
@@ -57,7 +62,6 @@ const Profile = () => {
       });
       setSuccess('Passenger profile details updated successfully.');
     } catch (err) {
-      // If doesn't exist, create it
       try {
         await api.post('/passengers', {
           passportNumber: passportNumber.trim(),
@@ -66,8 +70,8 @@ const Profile = () => {
           frequentFlyerNumber: frequentFlyerNumber.trim() || undefined
         });
         setSuccess('Passenger profile created successfully.');
-      } catch (createErr) {
-        setError(createErr.message || 'Failed to update profile.');
+      } catch (postErr) {
+        setError(postErr.response?.data?.message || postErr.message || 'Failed to save profile');
       }
     } finally {
       setSaving(false);
@@ -75,120 +79,136 @@ const Profile = () => {
   };
 
   if (loading) {
-    return <LoadingSpinner fullPage text="Retrieving profile..." />;
+    return <LoadingSpinner text="Retrieving passenger identity..." />;
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#F4F5F7] text-[#172B4D] py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto space-y-6">
-        <div className="border-b border-slate-800 pb-4">
-          <h1 className="text-3xl font-extrabold text-white">Passenger Profile</h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Keep your passport and travel credentials updated for faster check-in.
-          </p>
+        
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-200 gap-4">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-[#0052CC]">Passenger Center</span>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#091E42]">My Profile & Travel Credentials</h1>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Manage your travel identity documents and frequent flyer points for seamless check-in.
+            </p>
+          </div>
+
+          <div className="flex items-center space-x-2 bg-white px-3.5 py-1.5 rounded-full border border-slate-200 text-xs font-bold text-[#0052CC]">
+            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <span>Role: {user?.role || 'Passenger'}</span>
+          </div>
         </div>
 
         {error && (
-          <div className="bg-rose-950/50 border border-rose-800 text-rose-300 p-4 rounded-xl flex items-center space-x-3 text-sm">
+          <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl flex items-center space-x-2 text-xs animate-fade-in-up">
             <AlertCircle className="w-5 h-5 flex-shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
         {success && (
-          <div className="bg-emerald-950/50 border border-emerald-800 text-emerald-300 p-4 rounded-xl flex items-center space-x-3 text-sm">
-            <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+          <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-xl flex items-center space-x-2 text-xs animate-fade-in-up">
+            <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-emerald-600" />
             <span>{success}</span>
           </div>
         )}
 
-        {/* Account Info Card */}
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
-          <div className="flex items-center space-x-4 border-b border-slate-800 pb-4">
-            <div className="w-14 h-14 rounded-2xl bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold text-xl border border-blue-500/30">
-              {user?.firstName ? user.firstName[0] : 'U'}
+        {/* Profile Card */}
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+          
+          {/* Account Overview */}
+          <div className="flex items-center space-x-4 pb-6 border-b border-slate-100">
+            <div className="w-16 h-16 rounded-2xl bg-[#0052CC] text-white flex items-center justify-center font-extrabold text-2xl shadow-md shadow-blue-500/20">
+              {(user?.firstName || 'E')[0].toUpperCase()}
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white">
+              <h2 className="text-xl font-extrabold text-[#091E42]">
                 {user?.firstName} {user?.lastName}
-              </h3>
-              <p className="text-xs text-slate-400 flex items-center gap-1.5 mt-0.5">
-                <Mail className="w-3.5 h-3.5 text-slate-500" />
+              </h2>
+              <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
+                <Mail className="w-3.5 h-3.5 text-slate-400" />
                 <span>{user?.email}</span>
-                <span>•</span>
-                <span className="text-blue-400 font-semibold">{user?.role}</span>
               </p>
             </div>
           </div>
 
-          <form onSubmit={handleSave} className="space-y-4 pt-2">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Form */}
+          <form onSubmit={handleSave} className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
-                <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">
-                  Passport Number *
+                <label className="block font-bold text-slate-600 uppercase tracking-wider mb-1 flex items-center gap-1">
+                  <User className="w-3.5 h-3.5 text-[#0052CC]" />
+                  Passport / Photo ID Number
                 </label>
                 <input
                   type="text"
-                  required
-                  placeholder="e.g. P12345678"
+                  placeholder="e.g. Z1234567 or Indian Govt ID"
                   value={passportNumber}
-                  onChange={(e) => setPassportNumber(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={(e) => setPassportNumber(e.target.value.toUpperCase())}
+                  className="w-full bg-[#F4F5F7] border border-slate-300 rounded-xl px-3.5 py-2.5 font-mono font-bold text-[#091E42] focus:ring-2 focus:ring-[#0052CC] focus:outline-none focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">
+                <label className="block font-bold text-slate-600 uppercase tracking-wider mb-1 flex items-center gap-1">
+                  <Globe className="w-3.5 h-3.5 text-[#0052CC]" />
                   Nationality
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. United States"
                   value={nationality}
                   onChange={(e) => setNationality(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="e.g. India"
+                  className="w-full bg-[#F4F5F7] border border-slate-300 rounded-xl px-3.5 py-2.5 font-semibold text-[#091E42] focus:ring-2 focus:ring-[#0052CC] focus:outline-none focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">
-                  Contact Phone
-                </label>
-                <input
-                  type="tel"
-                  placeholder="+1-555-0199"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">
-                  Frequent Flyer ID
+                <label className="block font-bold text-slate-600 uppercase tracking-wider mb-1 flex items-center gap-1">
+                  <Phone className="w-3.5 h-3.5 text-[#0052CC]" />
+                  Mobile Number
                 </label>
                 <input
                   type="text"
-                  placeholder="FF-90218"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="+91 98765 43210"
+                  className="w-full bg-[#F4F5F7] border border-slate-300 rounded-xl px-3.5 py-2.5 font-semibold text-[#091E42] focus:ring-2 focus:ring-[#0052CC] focus:outline-none focus:bg-white"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-600 uppercase tracking-wider mb-1 flex items-center gap-1">
+                  <Award className="w-3.5 h-3.5 text-[#0052CC]" />
+                  Frequent Flyer Code
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. EA-FLY-8821"
                   value={frequentFlyerNumber}
-                  onChange={(e) => setFrequentFlyerNumber(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={(e) => setFrequentFlyerNumber(e.target.value.toUpperCase())}
+                  className="w-full bg-[#F4F5F7] border border-slate-300 rounded-xl px-3.5 py-2.5 font-mono font-bold text-[#091E42] focus:ring-2 focus:ring-[#0052CC] focus:outline-none focus:bg-white"
                 />
               </div>
             </div>
 
-            <div className="pt-4 flex justify-end">
+            <div className="pt-4 border-t border-slate-100 flex justify-end">
               <button
                 type="submit"
                 disabled={saving}
-                className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm px-6 py-2.5 rounded-xl shadow-lg shadow-blue-600/30 transition disabled:opacity-50"
+                className="flex items-center space-x-2 bg-[#0052CC] hover:bg-[#003A8C] text-white font-bold py-3 px-6 rounded-xl shadow-md transition disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
-                <span>{saving ? 'Saving...' : 'Save Profile Details'}</span>
+                <span>{saving ? 'Saving...' : 'Update Profile'}</span>
               </button>
             </div>
           </form>
+
         </div>
+
       </div>
     </div>
   );

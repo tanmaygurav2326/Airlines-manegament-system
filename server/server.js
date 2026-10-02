@@ -21,6 +21,8 @@ const passengerRoutes = require('./routes/passengers.routes');
 const baggageRoutes = require('./routes/baggage.routes');
 const crewRoutes = require('./routes/crew.routes');
 const adminRoutes = require('./routes/admin.routes');
+const feedbackRoutes = require('./routes/feedback.routes');
+const currencyRoutes = require('./routes/currency.routes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -71,6 +73,8 @@ app.use('/api/passengers', passengerRoutes);
 app.use('/api/baggage', baggageRoutes);
 app.use('/api/crews', crewRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/feedback', feedbackRoutes);
+app.use('/api/currency', currencyRoutes);
 
 // ============================================
 // 404 - ROUTE NOT FOUND

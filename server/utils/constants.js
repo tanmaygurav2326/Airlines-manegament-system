@@ -80,6 +80,7 @@ const JWT_CONFIG = {
 
 module.exports = {
   ROLES,
+  USER_ROLES: ROLES,
   FLIGHT_STATUSES,
   SEAT_STATUS,
   SEAT_CLASSES,
