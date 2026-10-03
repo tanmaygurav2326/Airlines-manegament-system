@@ -49,19 +49,43 @@ const SeatSelection = () => {
           api.get(`/flights/${flightId}/seats`)
         ]);
 
-        if (flightRes?.data) setFlight(flightRes.data);
+        if (flightRes) {
+          const flightData = flightRes.data?.data || flightRes.data || flightRes;
+          setFlight(flightData);
+        }
 
-        if (seatsRes?.data) {
+        if (seatsRes) {
+          const payload = seatsRes.data?.data || seatsRes.data || seatsRes;
           let allSeats = [];
-          if (Array.isArray(seatsRes.data)) {
-            allSeats = seatsRes.data;
-          } else if (seatsRes.data.seatsByClass) {
-            Object.values(seatsRes.data.seatsByClass).forEach(arr => {
-              allSeats.push(...arr);
+
+          if (Array.isArray(payload)) {
+            allSeats = payload;
+          } else if (payload?.seatsByClass) {
+            Object.values(payload.seatsByClass).forEach(arr => {
+              if (Array.isArray(arr)) {
+                allSeats.push(...arr);
+              }
             });
+          } else if (Array.isArray(payload?.seats)) {
+            allSeats = payload.seats;
           }
+
+          // Normalize seat properties (status, availability, seat number, class)
+          allSeats = allSeats.map(seat => {
+            const status = (seat.STATUS || seat.status || '').toUpperCase();
+            const isAvailable = status === 'AVAILABLE' || seat.isAvailable === true;
+            return {
+              ...seat,
+              SEATNUMBER: seat.SEATNUMBER || seat.seatNumber || seat.seat_number,
+              CLASS: seat.CLASS || seat.class || 'Economy',
+              STATUS: status || (isAvailable ? 'AVAILABLE' : 'OCCUPIED'),
+              ISAVAILABLE: isAvailable
+            };
+          });
+
           setSeats(allSeats);
         }
+
       } catch (err) {
         setError(err.message || 'Failed to load seats');
       } finally {
@@ -88,8 +112,12 @@ const SeatSelection = () => {
       setSelectedSeats(selectedSeats.filter((s) => s.SEATNUMBER !== seat.SEATNUMBER));
     } else {
       if (selectedSeats.length >= passengerCount) {
-        // Replace first selected seat if max reached
-        setSelectedSeats([...selectedSeats.slice(1), seat]);
+        // If passenger count is 1, replace current selection. Otherwise swap first.
+        if (passengerCount === 1) {
+          setSelectedSeats([seat]);
+        } else {
+          setSelectedSeats([...selectedSeats.slice(1), seat]);
+        }
       } else {
         setSelectedSeats([...selectedSeats, seat]);
       }
@@ -97,7 +125,7 @@ const SeatSelection = () => {
   };
 
   const handleProceedToCheckout = () => {
-    if (selectedSeats.length === 0) return;
+    if (selectedSeats.length !== passengerCount) return;
 
     if (!isAuthenticated) {
       const redirect = encodeURIComponent(
@@ -114,6 +142,7 @@ const SeatSelection = () => {
   };
 
   const totalPrice = selectedSeats.reduce((sum, s) => sum + calculateSeatPrice(s.CLASS), 0);
+  const remainingSeatsNeeded = Math.max(0, passengerCount - selectedSeats.length);
 
   if (loading) {
     return <LoadingSpinner text="Rendering Enum Airways Aircraft Seat Map..." />;
@@ -238,11 +267,17 @@ const SeatSelection = () => {
                               ? 'bg-[#0052CC] text-white shadow-md shadow-blue-500/30 scale-105 ring-2 ring-offset-1 ring-[#0052CC]'
                               : isAvailable
                               ? 'bg-[#F4F5F7] hover:bg-[#DEEBFF] hover:text-[#0052CC] text-[#172B4D] border border-slate-200 cursor-pointer'
-                              : 'bg-slate-100 border border-slate-200 text-slate-300 cursor-not-allowed'
+                              : 'bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed'
                           }`}
                           title={`${seat.SEATNUMBER} (${seat.CLASS}) - ${isAvailable ? 'Available' : 'Occupied'}`}
                         >
-                          <Armchair className="w-3.5 h-3.5 mb-0.5 opacity-80" />
+                          {isSelected ? (
+                            <Armchair className="w-3.5 h-3.5 mb-0.5 opacity-90" />
+                          ) : isAvailable ? (
+                            <Armchair className="w-3.5 h-3.5 mb-0.5 opacity-80" />
+                          ) : (
+                            <span className="text-[10px] font-bold text-slate-400 mb-0.5">✕</span>
+                          )}
                           <span>{seat.SEATNUMBER}</span>
                         </button>
                       );
@@ -269,7 +304,9 @@ const SeatSelection = () => {
             </div>
             <div>
               <p className="text-xs text-slate-500">
-                {selectedSeats.length === passengerCount ? 'All seats selected' : `Please select ${passengerCount - selectedSeats.length} more seat(s)`}
+                {selectedSeats.length === passengerCount
+                  ? 'All seats selected'
+                  : `Please select ${remainingSeatsNeeded} more seat${remainingSeatsNeeded > 1 ? 's' : ''}`}
               </p>
               <p className="text-sm font-bold text-[#091E42]">
                 Seats: {selectedSeats.map((s) => s.SEATNUMBER).join(', ') || 'None'}
@@ -282,7 +319,7 @@ const SeatSelection = () => {
             disabled={selectedSeats.length !== passengerCount}
             className={`w-full sm:w-auto px-8 py-3.5 rounded-xl font-extrabold text-sm transition shadow-md flex items-center justify-center space-x-2 ${
               selectedSeats.length === passengerCount
-                ? 'bg-[#0052CC] hover:bg-[#003A8C] text-white shadow-blue-500/20 active:scale-95'
+                ? 'bg-[#0052CC] hover:bg-[#003A8C] text-white shadow-blue-500/20 active:scale-95 cursor-pointer'
                 : 'bg-slate-200 text-slate-400 cursor-not-allowed'
             }`}
           >

@@ -18,6 +18,7 @@ const flightService = {
           F.FlightNumber,
           F.AircraftID,
           A.Model as AircraftModel,
+          A.TotalSeats,
           F.DepartureAirport,
           F.ArrivalAirport,
           F.DepartureTime,
@@ -27,7 +28,8 @@ const flightService = {
           AP1.AirportName as DepartureAirportName,
           AP2.AirportName as ArrivalAirportName,
           AP1.City as DepartureCity,
-          AP2.City as ArrivalCity
+          AP2.City as ArrivalCity,
+          (SELECT COUNT(*) FROM AircraftSeats WHERE AircraftID = F.AircraftID AND Status = 'AVAILABLE') as AvailableSeats
         FROM Flights F
         JOIN Aircraft A ON F.AircraftID = A.AircraftID
         JOIN Airports AP1 ON F.DepartureAirport = AP1.AirportCode
@@ -36,7 +38,13 @@ const flightService = {
         {}
       );
 
-      return flights;
+      // Calculate duration for each flight so sort-by-fastest works on all code paths
+      const enrichedFlights = flights.map(flight => ({
+        ...flight,
+        DURATIONMINUTES: Math.round((new Date(flight.ARRIVALTIME) - new Date(flight.DEPARTURETIME)) / (1000 * 60))
+      }));
+
+      return enrichedFlights;
     } catch (error) {
       console.error('Get all flights error:', error.message);
       throw {

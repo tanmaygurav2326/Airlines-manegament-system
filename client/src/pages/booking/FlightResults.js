@@ -42,7 +42,7 @@ const FlightResults = () => {
   const [maxPrice, setMaxPrice] = useState(50000);
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [timeOfDayFilter, setTimeOfDayFilter] = useState('ALL'); // 'ALL' | 'morning' | 'afternoon' | 'evening'
-  const [sortBy, setSortBy] = useState('price_asc'); // 'price_asc' | 'time_asc' | 'duration_asc'
+  const [sortBy, setSortBy] = useState('price_asc'); // 'price_asc' | 'price_desc' | 'time_asc' | 'time_desc' | 'duration_asc' | 'duration_desc'
 
   useEffect(() => {
     const fetchFlights = async () => {
@@ -58,21 +58,29 @@ const FlightResults = () => {
           res = await api.get('/flights');
         }
 
-        if (res?.data) {
-          const list = Array.isArray(res.data) ? res.data : [];
-          // If search returned empty list, also fall back to all flights matching route or general
-          if (list.length === 0) {
-            const allRes = await api.get('/flights');
-            const allList = Array.isArray(allRes.data) ? allRes.data : [];
-            // Filter by route if possible, else show all
-            const routeMatches = allList.filter(f =>
-              (f.DEPARTUREAIRPORT === from || f.DEPARTURECITY === from) &&
-              (f.ARRIVALAIRPORT === to || f.ARRIVALCITY === to)
-            );
-            setFlights(routeMatches.length > 0 ? routeMatches : allList);
-          } else {
-            setFlights(list);
-          }
+        const extractList = (response) => {
+          if (!response) return [];
+          const payload = response.data !== undefined ? response.data : response;
+          if (Array.isArray(payload)) return payload;
+          if (Array.isArray(payload?.data)) return payload.data;
+          if (Array.isArray(response)) return response;
+          return [];
+        };
+
+        let list = extractList(res);
+
+        // If search returned empty list, also fall back to all flights matching route or general
+        if (list.length === 0) {
+          const allRes = await api.get('/flights');
+          const allList = extractList(allRes);
+          // Filter by route if possible, else show all
+          const routeMatches = allList.filter(f =>
+            (f.DEPARTUREAIRPORT === from || f.DEPARTURECITY === from) &&
+            (f.ARRIVALAIRPORT === to || f.ARRIVALCITY === to)
+          );
+          setFlights(routeMatches.length > 0 ? routeMatches : allList);
+        } else {
+          setFlights(list);
         }
       } catch (err) {
         setError(err.message || 'Failed to search flights');
@@ -89,6 +97,26 @@ const FlightResults = () => {
     return Math.round(Number(basePrice || 3500) * multiplier);
   };
 
+  const getFlightDuration = (f) => {
+    if (f.DURATIONMINUTES !== undefined && f.DURATIONMINUTES !== null) {
+      return Number(f.DURATIONMINUTES);
+    }
+    if (f.DEPARTURETIME && f.ARRIVALTIME) {
+      const dep = new Date(String(f.DEPARTURETIME).replace(' ', 'T')).getTime();
+      const arr = new Date(String(f.ARRIVALTIME).replace(' ', 'T')).getTime();
+      if (!isNaN(dep) && !isNaN(arr) && arr > dep) {
+        return Math.round((arr - dep) / (1000 * 60));
+      }
+    }
+    return 120;
+  };
+
+  const getFlightDepartureTimestamp = (f) => {
+    if (!f.DEPARTURETIME) return 0;
+    const ts = new Date(String(f.DEPARTURETIME).replace(' ', 'T')).getTime();
+    return isNaN(ts) ? 0 : ts;
+  };
+
   // Filter logic
   const filteredFlights = flights.filter((f) => {
     const fare = calculateFare(f.BASEPRICE, selectedClass);
@@ -98,7 +126,7 @@ const FlightResults = () => {
     // Time of day check
     let matchesTime = true;
     if (timeOfDayFilter !== 'ALL' && f.DEPARTURETIME) {
-      const depHour = new Date(f.DEPARTURETIME).getHours();
+      const depHour = new Date(String(f.DEPARTURETIME).replace(' ', 'T')).getHours();
       if (timeOfDayFilter === 'morning') matchesTime = depHour < 12;
       else if (timeOfDayFilter === 'afternoon') matchesTime = depHour >= 12 && depHour < 18;
       else if (timeOfDayFilter === 'evening') matchesTime = depHour >= 18;
@@ -107,7 +135,7 @@ const FlightResults = () => {
     return matchesPrice && matchesStatus && matchesTime;
   });
 
-  // Sort logic
+  // Sort logic supporting all directions
   const sortedFlights = [...filteredFlights].sort((a, b) => {
     const fareA = calculateFare(a.BASEPRICE, selectedClass);
     const fareB = calculateFare(b.BASEPRICE, selectedClass);
@@ -115,10 +143,16 @@ const FlightResults = () => {
     if (sortBy === 'price_asc') return fareA - fareB;
     if (sortBy === 'price_desc') return fareB - fareA;
     if (sortBy === 'time_asc') {
-      return new Date(a.DEPARTURETIME || 0) - new Date(b.DEPARTURETIME || 0);
+      return getFlightDepartureTimestamp(a) - getFlightDepartureTimestamp(b);
+    }
+    if (sortBy === 'time_desc') {
+      return getFlightDepartureTimestamp(b) - getFlightDepartureTimestamp(a);
     }
     if (sortBy === 'duration_asc') {
-      return (a.DURATIONMINUTES || 120) - (b.DURATIONMINUTES || 120);
+      return getFlightDuration(a) - getFlightDuration(b);
+    }
+    if (sortBy === 'duration_desc') {
+      return getFlightDuration(b) - getFlightDuration(a);
     }
     return 0;
   });
@@ -288,20 +322,24 @@ const FlightResults = () => {
           <div className="lg:col-span-9 space-y-4">
 
             {/* Sorting Toolbar */}
-            <div className="bg-white border border-slate-200 rounded-xl px-4 py-2.5 shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div className="bg-white border border-slate-200 rounded-xl px-4 py-3 shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs">
               <div className="flex items-center space-x-2 text-slate-500 font-medium">
                 <ArrowUpDown className="w-3.5 h-3.5 text-[#0052CC]" />
-                <span>Sort results by:</span>
+                <span>Sort by:</span>
               </div>
 
-              <div className="flex items-center space-x-2">
+              <div className="flex flex-wrap items-center gap-1.5">
                 {[
-                  { id: 'price_asc', label: 'Lowest Price' },
-                  { id: 'time_asc', label: 'Earliest Departure' },
-                  { id: 'duration_asc', label: 'Fastest' }
+                  { id: 'price_asc', label: 'Price: Low to High' },
+                  { id: 'price_desc', label: 'Price: High to Low' },
+                  { id: 'time_asc', label: 'Departure: Earliest' },
+                  { id: 'time_desc', label: 'Departure: Latest' },
+                  { id: 'duration_asc', label: 'Duration: Shortest' },
+                  { id: 'duration_desc', label: 'Duration: Longest' }
                 ].map((s) => (
                   <button
                     key={s.id}
+                    type="button"
                     onClick={() => setSortBy(s.id)}
                     className={`px-3 py-1.5 rounded-lg font-bold transition ${
                       sortBy === s.id
