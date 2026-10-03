@@ -4,31 +4,31 @@ import { AuthProvider } from './context/AuthContext';
 import { CurrencyProvider } from './context/CurrencyContext';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
-import ProtectedRoute from './components/common/ProtectedRoute';
+import ProtectedRoute from './components/layout/ProtectedRoute';
 
 // Public Pages
 import Home from './pages/Home';
-import FlightResults from './pages/FlightResults';
-import SeatSelection from './pages/SeatSelection';
-import BaggageTracker from './pages/BaggageTracker';
-import ManageBooking from './pages/ManageBooking';
-import Feedback from './pages/Feedback';
-import Help from './pages/Help';
-import Privacy from './pages/Privacy';
-import Terms from './pages/Terms';
-import BaggageRules from './pages/BaggageRules';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import FlightResults from './pages/booking/FlightResults';
+import SeatSelection from './pages/booking/SeatSelection';
+import BaggageTracker from './pages/info/BaggageTracker';
+import ManageBooking from './pages/booking/ManageBooking';
+import Feedback from './pages/info/Feedback';
+import Help from './pages/info/Help';
+import Privacy from './pages/info/Privacy';
+import Terms from './pages/info/Terms';
+import BaggageRules from './pages/info/BaggageRules';
+import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
 
 // Protected Passenger Pages
-import Checkout from './pages/Checkout';
-import BookingConfirmation from './pages/BookingConfirmation';
-import MyBookings from './pages/MyBookings';
+import Checkout from './pages/booking/Checkout';
+import BookingConfirmation from './pages/booking/BookingConfirmation';
+import MyBookings from './pages/booking/MyBookings';
 import Profile from './pages/Profile';
 
 // Admin / Staff Pages
-import AdminDashboard from './pages/AdminDashboard';
-import AdminFlights from './pages/AdminFlights';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminFlights from './pages/admin/AdminFlights';
 
 import './App.css';
 

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import api from '../services/api';
-import { useCurrency } from '../context/CurrencyContext';
-import LoadingSpinner from '../components/common/LoadingSpinner';
+import api from '../../services/api';
+import { useCurrency } from '../../context/CurrencyContext';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { 
   CheckCircle2, 
   Printer, 
   Plane
 } from 'lucide-react';
-import logoImg from '../assets/logo.jpg';
+import logoImg from '../../assets/logo.jpg';
 
 const BookingConfirmation = () => {
   const { bookingId } = useParams();

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import api from '../services/api';
-import { useAuth } from '../context/AuthContext';
-import { useCurrency } from '../context/CurrencyContext';
-import LoadingSpinner from '../components/common/LoadingSpinner';
+import api from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
+import { useCurrency } from '../../context/CurrencyContext';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { 
   Armchair, 
   ArrowRight, 

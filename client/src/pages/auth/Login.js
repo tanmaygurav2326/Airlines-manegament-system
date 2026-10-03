@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { 
   LogIn, 
   AlertCircle, 
@@ -8,8 +8,8 @@ import {
   Mail,
   ShieldCheck 
 } from 'lucide-react';
-import LoadingSpinner from '../components/common/LoadingSpinner';
-import logoImg from '../assets/logo.jpg';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import logoImg from '../../assets/logo.jpg';
 
 const Login = () => {
   const navigate = useNavigate();

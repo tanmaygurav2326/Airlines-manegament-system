@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import api from '../services/api';
-import FlightCard from '../components/flights/FlightCard';
-import LoadingSpinner from '../components/common/LoadingSpinner';
-import { useCurrency } from '../context/CurrencyContext';
+import api from '../../services/api';
+import FlightCard from '../../components/flights/FlightCard';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import { useCurrency } from '../../context/CurrencyContext';
 import { 
   Plane, 
   ArrowRight, 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { 
   Plane, 
   UserPlus, 
@@ -9,8 +9,8 @@ import {
   KeyRound, 
   Briefcase 
 } from 'lucide-react';
-import LoadingSpinner from '../components/common/LoadingSpinner';
-import logoImg from '../assets/logo.jpg';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import logoImg from '../../assets/logo.jpg';
 
 const Register = () => {
   const navigate = useNavigate();

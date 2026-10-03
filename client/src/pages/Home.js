@@ -18,8 +18,8 @@ import {
   AlertCircle
 } from 'lucide-react';
 
-import DatePicker from '../components/common/DatePicker';
-import PassengerSelector from '../components/common/PassengerSelector';
+import DatePicker from '../components/ui/DatePicker';
+import PassengerSelector from '../components/ui/PassengerSelector';
 
 const POPULAR_ROUTES = [
   { from: 'BOM', to: 'DEL', fromCity: 'Mumbai', toCity: 'Delhi', price: 4200, time: '2h 10m', type: 'Domestic Express' },
