@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { useCurrency } from '../context/CurrencyContext';
-import { 
-  PlaneTakeoff, 
-  PlaneLanding, 
-  Search, 
-  Luggage, 
-  ArrowRightLeft, 
-  ShieldCheck, 
-  Clock, 
+import {
+  PlaneTakeoff,
+  PlaneLanding,
+  Search,
+  Luggage,
+  ArrowRightLeft,
+  ShieldCheck,
+  Clock,
   Sparkles,
   Plane,
   Award,
@@ -37,11 +37,11 @@ const Home = () => {
   const [activeTab, setActiveTab] = useState('book'); // 'book' | 'pnr' | 'baggage'
   const [tripType, setTripType] = useState('oneway'); // 'oneway' | 'roundtrip'
   const [airports, setAirports] = useState([]);
-  
+
   // Search parameters
   const [fromAirport, setFromAirport] = useState('BOM');
   const [toAirport, setToAirport] = useState('DEL');
-  
+
   // Current date (not hardcoded)
   const todayStr = new Date().toISOString().split('T')[0];
   const [departureDate, setDepartureDate] = useState(todayStr);
@@ -136,7 +136,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-[#F8F9FA] text-[#172B4D] flex flex-col font-sans">
-      
+
       {/* Hero Section */}
       <section className="relative bg-gradient-to-b from-[#003A8C] via-[#0052CC] to-[#0747A6] pt-12 pb-28 px-4 sm:px-6 lg:px-8 text-white overflow-hidden">
         {/* Subtle background aviation pattern */}
@@ -208,7 +208,7 @@ const Home = () => {
           {activeTab === 'book' && (
             <div className="bg-white rounded-b-2xl rounded-tr-2xl p-6 sm:p-8 shadow-2xl border border-slate-200 text-[#172B4D] animate-fade-in-up">
               <form onSubmit={handleSearchFlights} className="space-y-6">
-                
+
                 {/* Trip Type & Cabin Class Selector */}
                 <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200 text-sm">
                   <div className="flex items-center space-x-4">
@@ -254,7 +254,7 @@ const Home = () => {
 
                 {/* Primary Route & Date Inputs */}
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
-                  
+
                   {/* From Airport */}
                   <div className="md:col-span-3">
                     <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1 flex items-center">

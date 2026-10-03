@@ -4,13 +4,13 @@ import api from '../../services/api';
 import { useCurrency } from '../../context/CurrencyContext';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import StatusBadge from '../../components/ui/StatusBadge';
-import { 
-  DollarSign, 
-  Plane, 
-  Ticket, 
-  Users, 
-  TrendingUp, 
-  BarChart3, 
+import {
+  DollarSign,
+  Plane,
+  Ticket,
+  Users,
+  TrendingUp,
+  BarChart3,
   Layers,
   RefreshCw
 } from 'lucide-react';
@@ -64,7 +64,7 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-[#F4F5F7] text-[#172B4D] py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
-        
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
           <div>
@@ -100,7 +100,7 @@ const AdminDashboard = () => {
 
         {/* 4 KPI Top Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          
+
           {/* Revenue */}
           <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3 shadow-xs">
             <div className="flex items-center justify-between">
@@ -169,7 +169,7 @@ const AdminDashboard = () => {
 
         {/* Breakdown Grids */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          
+
           {/* Revenue by Cabin Class */}
           <div className="lg:col-span-6 bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-xs">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">

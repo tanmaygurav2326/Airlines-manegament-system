@@ -3,13 +3,13 @@ import { useSearchParams } from 'react-router-dom';
 import api from '../../services/api';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import StatusBadge from '../../components/ui/StatusBadge';
-import { 
-  Luggage, 
-  Search, 
-  Plane, 
-  CheckCircle2, 
-  Clock, 
-  AlertCircle, 
+import {
+  Luggage,
+  Search,
+  Plane,
+  CheckCircle2,
+  Clock,
+  AlertCircle,
   PackageCheck,
   PlaneTakeoff
 } from 'lucide-react';
@@ -73,7 +73,7 @@ const BaggageTracker = () => {
   return (
     <div className="min-h-screen bg-[#F4F5F7] text-[#172B4D] py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-6">
-        
+
         {/* Header */}
         <div className="text-center space-y-2">
           <div className="bg-[#DEEBFF] text-[#0052CC] p-3 rounded-2xl w-fit mx-auto border border-blue-200">
@@ -124,7 +124,7 @@ const BaggageTracker = () => {
 
         {baggage && !loading && (
           <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8 animate-fade-in-up">
-            
+
             {/* Bag Info Header */}
             <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-6">
               <div>

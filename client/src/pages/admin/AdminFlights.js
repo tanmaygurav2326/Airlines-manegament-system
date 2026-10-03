@@ -3,9 +3,9 @@ import api from '../../services/api';
 import { useCurrency } from '../../context/CurrencyContext';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import StatusBadge from '../../components/ui/StatusBadge';
-import { 
-  CheckCircle2, 
-  AlertCircle, 
+import {
+  CheckCircle2,
+  AlertCircle,
   RefreshCw
 } from 'lucide-react';
 
@@ -52,7 +52,7 @@ const AdminFlights = () => {
   return (
     <div className="min-h-screen bg-[#F4F5F7] text-[#172B4D] py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-6">
-        
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div>

@@ -30,7 +30,7 @@ api.interceptors.response.use(
       error.response?.data?.error ||
       error.message ||
       'An unexpected error occurred';
-    
+
     // Auto logout on 401 Unauthorized
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
@@ -39,7 +39,7 @@ api.interceptors.response.use(
         window.location.href = '/login';
       }
     }
-    
+
     return Promise.reject(new Error(message));
   }
 );

@@ -4,12 +4,12 @@ import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
-import { 
-  CreditCard, 
-  ShieldCheck, 
-  Luggage, 
-  User, 
-  AlertCircle, 
+import {
+  CreditCard,
+  ShieldCheck,
+  Luggage,
+  User,
+  AlertCircle,
   Lock,
   Plane,
   Smartphone
@@ -217,7 +217,7 @@ const Checkout = () => {
   return (
     <div className="min-h-screen bg-[#F4F5F7] text-[#172B4D] py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto space-y-8">
-        
+
         {/* Step Indicator Header */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div>
@@ -242,11 +242,11 @@ const Checkout = () => {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
+
           {/* Main Checkout Form Column */}
           <div className="lg:col-span-8 space-y-6">
             <form onSubmit={handleSubmitBooking} className="space-y-6">
-              
+
               {/* Card 1: Passenger Information */}
               <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
                 <div className="flex items-center space-x-2 border-b border-slate-100 pb-3">
@@ -460,7 +460,7 @@ const Checkout = () => {
 
           {/* Right Sidebar: Itinerary & Fare Breakdown */}
           <div className="lg:col-span-4 space-y-6">
-            
+
             {/* Itinerary Summary */}
             <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
               <span className="text-[10px] uppercase font-bold text-[#0052CC] tracking-wider block">

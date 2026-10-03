@@ -20,10 +20,10 @@ const ticketService = {
 
       // Validate input
       if (!bookingId || !flightId || !passengerId || !seatNumber || !cabinClass) {
-        throw { 
-          status: 400, 
-          message: 'bookingId, flightId, passengerId, seatNumber, and cabinClass are required', 
-          code: ERROR_CODES.INVALID_INPUT 
+        throw {
+          status: 400,
+          message: 'bookingId, flightId, passengerId, seatNumber, and cabinClass are required',
+          code: ERROR_CODES.INVALID_INPUT
         };
       }
 
@@ -34,10 +34,10 @@ const ticketService = {
       );
 
       if (!bookings || bookings.length === 0) {
-        throw { 
-          status: 404, 
-          message: 'Booking not found', 
-          code: ERROR_CODES.NOT_FOUND 
+        throw {
+          status: 404,
+          message: 'Booking not found',
+          code: ERROR_CODES.NOT_FOUND
         };
       }
 
@@ -48,10 +48,10 @@ const ticketService = {
       );
 
       if (!passengers || passengers.length === 0) {
-        throw { 
-          status: 404, 
-          message: 'Passenger not found', 
-          code: ERROR_CODES.NOT_FOUND 
+        throw {
+          status: 404,
+          message: 'Passenger not found',
+          code: ERROR_CODES.NOT_FOUND
         };
       }
 
@@ -62,10 +62,10 @@ const ticketService = {
       );
 
       if (!flights || flights.length === 0) {
-        throw { 
-          status: 404, 
-          message: 'Flight not found', 
-          code: ERROR_CODES.NOT_FOUND 
+        throw {
+          status: 404,
+          message: 'Flight not found',
+          code: ERROR_CODES.NOT_FOUND
         };
       }
 
@@ -81,10 +81,10 @@ const ticketService = {
       );
 
       if (existingTickets.rows && existingTickets.rows.length > 0) {
-        throw { 
-          status: 409, 
-          message: `Seat ${seatNumber} is already booked`, 
-          code: ERROR_CODES.CONFLICT 
+        throw {
+          status: 409,
+          message: `Seat ${seatNumber} is already booked`,
+          code: ERROR_CODES.CONFLICT
         };
       }
 
@@ -116,10 +116,10 @@ const ticketService = {
       );
 
       if (!tickets.rows || tickets.rows.length === 0) {
-        throw { 
-          status: 500, 
-          message: 'Failed to retrieve created ticket', 
-          code: ERROR_CODES.DATABASE_ERROR 
+        throw {
+          status: 500,
+          message: 'Failed to retrieve created ticket',
+          code: ERROR_CODES.DATABASE_ERROR
         };
       }
 
@@ -151,10 +151,10 @@ const ticketService = {
       }
       if (error.status) throw error;
       console.error('Create ticket error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to create ticket', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to create ticket',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     } finally {
       if (connection) {
@@ -184,10 +184,10 @@ const ticketService = {
       );
 
       if (!tickets || tickets.length === 0) {
-        throw { 
-          status: 404, 
-          message: 'Ticket not found', 
-          code: ERROR_CODES.NOT_FOUND 
+        throw {
+          status: 404,
+          message: 'Ticket not found',
+          code: ERROR_CODES.NOT_FOUND
         };
       }
 
@@ -217,10 +217,10 @@ const ticketService = {
     } catch (error) {
       if (error.status) throw error;
       console.error('Get ticket details error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to retrieve ticket', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to retrieve ticket',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   }

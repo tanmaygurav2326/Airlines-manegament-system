@@ -17,19 +17,19 @@ const crewService = {
 
       // Validate input
       if (!flightId || !userId || !crewRole) {
-        throw { 
-          status: 400, 
-          message: 'flightId, userId, and crewRole are required', 
-          code: ERROR_CODES.INVALID_INPUT 
+        throw {
+          status: 400,
+          message: 'flightId, userId, and crewRole are required',
+          code: ERROR_CODES.INVALID_INPUT
         };
       }
 
       const validRoles = ['Pilot', 'Co-Pilot', 'Cabin Crew Lead', 'Cabin Crew'];
       if (!validRoles.includes(crewRole)) {
-        throw { 
-          status: 400, 
-          message: `Invalid crewRole. Must be one of: ${validRoles.join(', ')}`, 
-          code: ERROR_CODES.INVALID_INPUT 
+        throw {
+          status: 400,
+          message: `Invalid crewRole. Must be one of: ${validRoles.join(', ')}`,
+          code: ERROR_CODES.INVALID_INPUT
         };
       }
 
@@ -40,10 +40,10 @@ const crewService = {
       );
 
       if (!flights || flights.length === 0) {
-        throw { 
-          status: 404, 
-          message: 'Flight not found', 
-          code: ERROR_CODES.NOT_FOUND 
+        throw {
+          status: 404,
+          message: 'Flight not found',
+          code: ERROR_CODES.NOT_FOUND
         };
       }
 
@@ -54,34 +54,34 @@ const crewService = {
       );
 
       if (!users || users.length === 0) {
-        throw { 
-          status: 404, 
-          message: 'User not found', 
-          code: ERROR_CODES.NOT_FOUND 
+        throw {
+          status: 404,
+          message: 'User not found',
+          code: ERROR_CODES.NOT_FOUND
         };
       }
 
       const user = users[0];
       if (user.ROLE === 'Passenger') {
-        throw { 
-          status: 403, 
-          message: 'Only staff and admin can be assigned to flights', 
-          code: ERROR_CODES.FORBIDDEN 
+        throw {
+          status: 403,
+          message: 'Only staff and admin can be assigned to flights',
+          code: ERROR_CODES.FORBIDDEN
         };
       }
 
       // Check if already assigned with same role
       const existing = await executeQuery(
-        `SELECT AssignmentID FROM CrewAssignment 
+        `SELECT AssignmentID FROM CrewAssignment
          WHERE FlightID = :flightId AND UserID = :userId AND CrewRole = :crewRole`,
         { flightId, userId, crewRole }
       );
 
       if (existing && existing.length > 0) {
-        throw { 
-          status: 409, 
-          message: 'User is already assigned to this flight with this role', 
-          code: ERROR_CODES.CONFLICT 
+        throw {
+          status: 409,
+          message: 'User is already assigned to this flight with this role',
+          code: ERROR_CODES.CONFLICT
         };
       }
 
@@ -105,10 +105,10 @@ const crewService = {
       );
 
       if (!assignments || assignments.length === 0) {
-        throw { 
-          status: 500, 
-          message: 'Failed to retrieve created assignment', 
-          code: ERROR_CODES.DATABASE_ERROR 
+        throw {
+          status: 500,
+          message: 'Failed to retrieve created assignment',
+          code: ERROR_CODES.DATABASE_ERROR
         };
       }
 
@@ -127,10 +127,10 @@ const crewService = {
     } catch (error) {
       if (error.status) throw error;
       console.error('Assign crew error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to assign crew', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to assign crew',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   },
@@ -162,10 +162,10 @@ const crewService = {
       }));
     } catch (error) {
       console.error('Get flight crew error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to retrieve crew', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to retrieve crew',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   },
@@ -198,10 +198,10 @@ const crewService = {
       }));
     } catch (error) {
       console.error('Get crew flights error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to retrieve flights', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to retrieve flights',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   },
@@ -220,10 +220,10 @@ const crewService = {
       );
 
       if (!assignments || assignments.length === 0) {
-        throw { 
-          status: 404, 
-          message: 'Assignment not found', 
-          code: ERROR_CODES.NOT_FOUND 
+        throw {
+          status: 404,
+          message: 'Assignment not found',
+          code: ERROR_CODES.NOT_FOUND
         };
       }
 
@@ -240,10 +240,10 @@ const crewService = {
     } catch (error) {
       if (error.status) throw error;
       console.error('Remove crew assignment error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to remove assignment', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to remove assignment',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   }

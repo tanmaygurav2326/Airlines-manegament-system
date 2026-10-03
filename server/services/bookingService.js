@@ -25,10 +25,10 @@ const bookingService = {
     try {
       const userId = typeof params === 'object' ? params.userId : params;
       if (!userId) {
-        throw { 
-          status: 400, 
-          message: 'userId is required', 
-          code: ERROR_CODES.INVALID_INPUT 
+        throw {
+          status: 400,
+          message: 'userId is required',
+          code: ERROR_CODES.INVALID_INPUT
         };
       }
 
@@ -77,10 +77,10 @@ const bookingService = {
       }
       if (error.status) throw error;
       console.error('Create booking error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to create booking', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to create booking',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     } finally {
       if (connection) {
@@ -96,10 +96,10 @@ const bookingService = {
     let connection;
     try {
       if (!bookingId) {
-        throw { 
-          status: 400, 
-          message: 'bookingId is required', 
-          code: ERROR_CODES.INVALID_INPUT 
+        throw {
+          status: 400,
+          message: 'bookingId is required',
+          code: ERROR_CODES.INVALID_INPUT
         };
       }
 
@@ -111,10 +111,10 @@ const bookingService = {
       );
 
       if (!bookingRes.rows || bookingRes.rows.length === 0) {
-        throw { 
-          status: 404, 
-          message: 'Booking not found', 
-          code: ERROR_CODES.NOT_FOUND 
+        throw {
+          status: 404,
+          message: 'Booking not found',
+          code: ERROR_CODES.NOT_FOUND
         };
       }
 
@@ -129,18 +129,18 @@ const bookingService = {
       const currentStatus = booking.STATUS || booking.Status;
 
       if (userId && ownerId !== userId) {
-        throw { 
-          status: 403, 
-          message: 'Access denied', 
-          code: ERROR_CODES.FORBIDDEN 
+        throw {
+          status: 403,
+          message: 'Access denied',
+          code: ERROR_CODES.FORBIDDEN
         };
       }
 
       if (currentStatus === BOOKING_STATUSES.CANCELLED) {
-        throw { 
-          status: 400, 
-          message: 'Booking is already cancelled', 
-          code: ERROR_CODES.INVALID_INPUT 
+        throw {
+          status: 400,
+          message: 'Booking is already cancelled',
+          code: ERROR_CODES.INVALID_INPUT
         };
       }
 
@@ -170,7 +170,7 @@ const bookingService = {
 
       await connection.commit();
 
-      return { 
+      return {
         message: 'Booking cancelled successfully',
         bookingId
       };
@@ -180,10 +180,10 @@ const bookingService = {
       }
       if (error.status) throw error;
       console.error('Cancel booking error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to cancel booking', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to cancel booking',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     } finally {
       if (connection) {
@@ -208,20 +208,20 @@ const bookingService = {
       );
 
       if (!bookings || bookings.length === 0) {
-        throw { 
-          status: 404, 
-          message: 'Booking not found', 
-          code: ERROR_CODES.NOT_FOUND 
+        throw {
+          status: 404,
+          message: 'Booking not found',
+          code: ERROR_CODES.NOT_FOUND
         };
       }
 
       const booking = bookings[0];
 
       if (userId && booking.USERID !== userId) {
-        throw { 
-          status: 403, 
-          message: 'Access denied', 
-          code: ERROR_CODES.FORBIDDEN 
+        throw {
+          status: 403,
+          message: 'Access denied',
+          code: ERROR_CODES.FORBIDDEN
         };
       }
 
@@ -273,10 +273,10 @@ const bookingService = {
     } catch (error) {
       if (error.status) throw error;
       console.error('Get booking details error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to retrieve booking details', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to retrieve booking details',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   },
@@ -307,10 +307,10 @@ const bookingService = {
       }));
     } catch (error) {
       console.error('Get user bookings error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to retrieve user bookings', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to retrieve user bookings',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   },

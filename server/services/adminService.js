@@ -50,10 +50,10 @@ const adminService = {
       };
     } catch (error) {
       console.error('Get revenue stats error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to retrieve revenue statistics', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to retrieve revenue statistics',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   },
@@ -113,10 +113,10 @@ const adminService = {
       };
     } catch (error) {
       console.error('Get flight stats error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to retrieve flight statistics', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to retrieve flight statistics',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   },
@@ -162,10 +162,10 @@ const adminService = {
       };
     } catch (error) {
       console.error('Get booking stats error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to retrieve booking statistics', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to retrieve booking statistics',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   },
@@ -193,7 +193,7 @@ const adminService = {
 
       // New users (created in last 30 days)
       const newUsers = await executeQuery(
-        `SELECT COUNT(*) as Count FROM Users 
+        `SELECT COUNT(*) as Count FROM Users
          WHERE CreatedAt >= TRUNC(SYSDATE) - 30`
       );
 
@@ -208,10 +208,10 @@ const adminService = {
       };
     } catch (error) {
       console.error('Get user stats error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to retrieve user statistics', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to retrieve user statistics',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   },
@@ -238,10 +238,10 @@ const adminService = {
       };
     } catch (error) {
       console.error('Get dashboard stats error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to retrieve dashboard statistics', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to retrieve dashboard statistics',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   }

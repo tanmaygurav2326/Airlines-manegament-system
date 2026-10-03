@@ -116,7 +116,7 @@ const startServer = async () => {
       console.log('╔════════════════════════════════════════════════════════════╗');
       console.log('║                   🚀 SERVER READY                          ║');
       console.log('╚════════════════════════════════════════════════════════════╝\n');
-      
+
       console.log(`📍 Server URL: http://localhost:${PORT}`);
       console.log(`📍 API Base:   http://localhost:${PORT}/api`);
       console.log(`📍 Health:     http://localhost:${PORT}/api/health`);

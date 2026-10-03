@@ -41,7 +41,7 @@ const calculateTicketPrice = (cabinClass, basePrice) => {
     'Business': 2.5,
     'First': 4.0
   };
-  
+
   const multiplier = multipliers[cabinClass] || 1.0;
   return Math.round(basePrice * multiplier * 100) / 100;
 };

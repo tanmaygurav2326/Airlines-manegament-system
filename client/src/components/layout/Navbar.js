@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useCurrency } from '../../context/CurrencyContext';
-import { 
-  Plane, 
-  Luggage, 
-  Calendar, 
-  User, 
-  LogOut, 
-  LogIn, 
-  UserPlus, 
-  LayoutDashboard, 
-  Menu, 
+import {
+  Plane,
+  Luggage,
+  Calendar,
+  User,
+  LogOut,
+  LogIn,
+  UserPlus,
+  LayoutDashboard,
+  Menu,
   X,
   MessageSquare,
   HelpCircle,
@@ -81,12 +81,12 @@ const Navbar = () => {
       {/* Main Navigation Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          
+
           {/* Brand Logo & Name */}
           <Link to="/" className="flex items-center space-x-3.5 group">
-            <img 
-              src={logoImg} 
-              alt="Enum Airways Logo" 
+            <img
+              src={logoImg}
+              alt="Enum Airways Logo"
               className="h-12 w-12 rounded-xl object-cover shadow-sm group-hover:scale-105 transition-transform duration-200 border border-slate-200"
               onError={(e) => {
                 e.target.onerror = null;
@@ -108,8 +108,8 @@ const Navbar = () => {
             <Link
               to="/"
               className={`px-3.5 py-2 rounded-xl text-sm font-semibold transition ${
-                isActive('/') 
-                  ? 'text-[#0052CC] bg-[#DEEBFF]' 
+                isActive('/')
+                  ? 'text-[#0052CC] bg-[#DEEBFF]'
                   : 'text-[#172B4D] hover:text-[#0052CC] hover:bg-[#F4F5F7]'
               }`}
             >
@@ -119,8 +119,8 @@ const Navbar = () => {
             <Link
               to="/manage-booking"
               className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-sm font-semibold transition ${
-                isActive('/manage-booking') 
-                  ? 'text-[#0052CC] bg-[#DEEBFF]' 
+                isActive('/manage-booking')
+                  ? 'text-[#0052CC] bg-[#DEEBFF]'
                   : 'text-[#172B4D] hover:text-[#0052CC] hover:bg-[#F4F5F7]'
               }`}
             >
@@ -131,8 +131,8 @@ const Navbar = () => {
             <Link
               to="/baggage"
               className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-sm font-semibold transition ${
-                isActive('/baggage') 
-                  ? 'text-[#0052CC] bg-[#DEEBFF]' 
+                isActive('/baggage')
+                  ? 'text-[#0052CC] bg-[#DEEBFF]'
                   : 'text-[#172B4D] hover:text-[#0052CC] hover:bg-[#F4F5F7]'
               }`}
             >
@@ -144,8 +144,8 @@ const Navbar = () => {
               <Link
                 to="/my-bookings"
                 className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-sm font-semibold transition ${
-                  isActive('/my-bookings') 
-                    ? 'text-[#0052CC] bg-[#DEEBFF]' 
+                  isActive('/my-bookings')
+                    ? 'text-[#0052CC] bg-[#DEEBFF]'
                     : 'text-[#172B4D] hover:text-[#0052CC] hover:bg-[#F4F5F7]'
                 }`}
               >
@@ -157,8 +157,8 @@ const Navbar = () => {
             <Link
               to="/feedback"
               className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-sm font-semibold transition ${
-                isActive('/feedback') 
-                  ? 'text-[#0052CC] bg-[#DEEBFF]' 
+                isActive('/feedback')
+                  ? 'text-[#0052CC] bg-[#DEEBFF]'
                   : 'text-[#172B4D] hover:text-[#0052CC] hover:bg-[#F4F5F7]'
               }`}
             >
@@ -171,8 +171,8 @@ const Navbar = () => {
               <Link
                 to="/admin/dashboard"
                 className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-sm font-semibold transition ${
-                  isActive('/admin/dashboard') 
-                    ? 'bg-amber-100 text-amber-900 border border-amber-300' 
+                  isActive('/admin/dashboard')
+                    ? 'bg-amber-100 text-amber-900 border border-amber-300'
                     : 'text-amber-800 hover:bg-amber-50'
                 }`}
               >

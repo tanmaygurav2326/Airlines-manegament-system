@@ -4,11 +4,11 @@ import api from '../../services/api';
 import { useCurrency } from '../../context/CurrencyContext';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import StatusBadge from '../../components/ui/StatusBadge';
-import { 
-  Search, 
-  User, 
-  AlertCircle, 
-  Printer, 
+import {
+  Search,
+  User,
+  AlertCircle,
+  Printer,
   ShieldCheck
 } from 'lucide-react';
 
@@ -73,7 +73,7 @@ const ManageBooking = () => {
   return (
     <div className="min-h-screen bg-[#F4F5F7] text-[#172B4D] py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-6">
-        
+
         {/* Title Header */}
         <div className="text-center space-y-2">
           <span className="text-xs font-bold uppercase tracking-wider text-[#0052CC]">Passenger Services</span>
@@ -125,7 +125,7 @@ const ManageBooking = () => {
         {/* Booking Details View */}
         {booking && !loading && (
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up">
-            
+
             {/* Header Ribbon */}
             <div className="bg-[#091E42] text-white p-6 flex flex-wrap items-center justify-between gap-4">
               <div>
@@ -154,7 +154,7 @@ const ManageBooking = () => {
 
             {/* Flight & Passenger Info */}
             <div className="p-6 space-y-6">
-              
+
               {/* Primary User / Booked By */}
               {booking.user && (
                 <div className="bg-[#F8F9FA] p-4 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between text-xs">

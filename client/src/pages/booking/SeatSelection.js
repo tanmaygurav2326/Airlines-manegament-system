@@ -4,10 +4,10 @@ import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
-import { 
-  Armchair, 
-  ArrowRight, 
-  Plane, 
+import {
+  Armchair,
+  ArrowRight,
+  Plane,
   AlertCircle
 } from 'lucide-react';
 
@@ -140,7 +140,7 @@ const SeatSelection = () => {
   return (
     <div className="min-h-screen bg-[#F4F5F7] text-[#172B4D] py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto space-y-8">
-        
+
         {/* Step Indicator & Flight Header */}
         <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
@@ -196,7 +196,7 @@ const SeatSelection = () => {
 
         {/* Aircraft Fuselage Layout */}
         <div className="max-w-xl mx-auto bg-white border-2 border-slate-200 rounded-t-[100px] rounded-b-3xl p-8 shadow-sm relative">
-          
+
           {/* Plane Nose / Cockpit Indicator */}
           <div className="text-center pb-6 border-b border-slate-100">
             <Plane className="w-8 h-8 text-[#0052CC] mx-auto rotate-180 mb-1" />

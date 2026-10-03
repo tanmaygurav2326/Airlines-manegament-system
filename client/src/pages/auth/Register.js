@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { 
-  Plane, 
-  UserPlus, 
-  AlertCircle, 
-  Mail, 
-  KeyRound, 
-  Briefcase 
+import {
+  Plane,
+  UserPlus,
+  AlertCircle,
+  Mail,
+  KeyRound,
+  Briefcase
 } from 'lucide-react';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import logoImg from '../../assets/logo.jpg';
@@ -56,13 +56,13 @@ const Register = () => {
   return (
     <div className="min-h-screen bg-[#F4F5F7] text-[#172B4D] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-6">
-        
+
         {/* Brand Header */}
         <div className="text-center space-y-2">
-          <img 
-            src={logoImg} 
-            alt="Enum Airways" 
-            className="h-16 w-16 mx-auto rounded-2xl object-cover shadow-sm border border-slate-200" 
+          <img
+            src={logoImg}
+            alt="Enum Airways"
+            className="h-16 w-16 mx-auto rounded-2xl object-cover shadow-sm border border-slate-200"
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = '/logo.jpg';
@@ -85,7 +85,7 @@ const Register = () => {
 
         <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
           <form onSubmit={handleSubmit} className="space-y-4">
-            
+
             {/* Account Type Selector */}
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">

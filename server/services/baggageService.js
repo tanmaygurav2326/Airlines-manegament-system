@@ -17,18 +17,18 @@ const baggageService = {
 
       // Validate input
       if (!ticketId || !weightKg) {
-        throw { 
-          status: 400, 
-          message: 'ticketId and weightKg are required', 
-          code: ERROR_CODES.INVALID_INPUT 
+        throw {
+          status: 400,
+          message: 'ticketId and weightKg are required',
+          code: ERROR_CODES.INVALID_INPUT
         };
       }
 
       if (weightKg <= 0 || weightKg > 100) {
-        throw { 
-          status: 400, 
-          message: 'Weight must be between 0 and 100 kg', 
-          code: ERROR_CODES.INVALID_INPUT 
+        throw {
+          status: 400,
+          message: 'Weight must be between 0 and 100 kg',
+          code: ERROR_CODES.INVALID_INPUT
         };
       }
 
@@ -39,10 +39,10 @@ const baggageService = {
       );
 
       if (!tickets || tickets.length === 0) {
-        throw { 
-          status: 404, 
-          message: 'Ticket not found', 
-          code: ERROR_CODES.NOT_FOUND 
+        throw {
+          status: 404,
+          message: 'Ticket not found',
+          code: ERROR_CODES.NOT_FOUND
         };
       }
 
@@ -66,10 +66,10 @@ const baggageService = {
       );
 
       if (!baggage || baggage.length === 0) {
-        throw { 
-          status: 500, 
-          message: 'Failed to retrieve created baggage', 
-          code: ERROR_CODES.DATABASE_ERROR 
+        throw {
+          status: 500,
+          message: 'Failed to retrieve created baggage',
+          code: ERROR_CODES.DATABASE_ERROR
         };
       }
 
@@ -85,10 +85,10 @@ const baggageService = {
     } catch (error) {
       if (error.status) throw error;
       console.error('Create baggage error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to create baggage', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to create baggage',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   },
@@ -112,10 +112,10 @@ const baggageService = {
       );
 
       if (!baggage || baggage.length === 0) {
-        throw { 
-          status: 404, 
-          message: 'Baggage not found', 
-          code: ERROR_CODES.NOT_FOUND 
+        throw {
+          status: 404,
+          message: 'Baggage not found',
+          code: ERROR_CODES.NOT_FOUND
         };
       }
 
@@ -134,10 +134,10 @@ const baggageService = {
     } catch (error) {
       if (error.status) throw error;
       console.error('Get baggage details error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to retrieve baggage', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to retrieve baggage',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   },
@@ -157,10 +157,10 @@ const baggageService = {
       );
 
       if (!baggage || baggage.length === 0) {
-        throw { 
-          status: 404, 
-          message: 'Baggage not found', 
-          code: ERROR_CODES.NOT_FOUND 
+        throw {
+          status: 404,
+          message: 'Baggage not found',
+          code: ERROR_CODES.NOT_FOUND
         };
       }
 
@@ -168,10 +168,10 @@ const baggageService = {
     } catch (error) {
       if (error.status) throw error;
       console.error('Get baggage by tracking number error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to retrieve baggage', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to retrieve baggage',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   },
@@ -187,10 +187,10 @@ const baggageService = {
       const validStatuses = ['Checked-In', 'In-Transit', 'On-Plane', 'Ready-for-Pickup', 'Lost'];
 
       if (!validStatuses.includes(status)) {
-        throw { 
-          status: 400, 
-          message: `Invalid status. Must be one of: ${validStatuses.join(', ')}`, 
-          code: ERROR_CODES.INVALID_INPUT 
+        throw {
+          status: 400,
+          message: `Invalid status. Must be one of: ${validStatuses.join(', ')}`,
+          code: ERROR_CODES.INVALID_INPUT
         };
       }
 
@@ -201,10 +201,10 @@ const baggageService = {
       );
 
       if (!baggage || baggage.length === 0) {
-        throw { 
-          status: 404, 
-          message: 'Baggage not found', 
-          code: ERROR_CODES.NOT_FOUND 
+        throw {
+          status: 404,
+          message: 'Baggage not found',
+          code: ERROR_CODES.NOT_FOUND
         };
       }
 
@@ -218,10 +218,10 @@ const baggageService = {
     } catch (error) {
       if (error.status) throw error;
       console.error('Update baggage status error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to update baggage', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to update baggage',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   },
@@ -251,10 +251,10 @@ const baggageService = {
       }));
     } catch (error) {
       console.error('Get baggage by flight error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to retrieve baggage', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to retrieve baggage',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   }

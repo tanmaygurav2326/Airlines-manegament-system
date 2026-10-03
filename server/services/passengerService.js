@@ -14,10 +14,10 @@ const passengerService = {
       const { userId, passportNumber, nationality, phoneNumber, frequentFlyerNumber } = passengerData;
 
       if (!userId || !passportNumber || !nationality) {
-        throw { 
-          status: 400, 
-          message: 'userId, passportNumber, and nationality are required', 
-          code: ERROR_CODES.INVALID_INPUT 
+        throw {
+          status: 400,
+          message: 'userId, passportNumber, and nationality are required',
+          code: ERROR_CODES.INVALID_INPUT
         };
       }
 
@@ -27,10 +27,10 @@ const passengerService = {
       );
 
       if (!users || users.length === 0) {
-        throw { 
-          status: 404, 
-          message: 'User not found', 
-          code: ERROR_CODES.NOT_FOUND 
+        throw {
+          status: 404,
+          message: 'User not found',
+          code: ERROR_CODES.NOT_FOUND
         };
       }
 
@@ -54,10 +54,10 @@ const passengerService = {
       );
 
       if (!passengers || passengers.length === 0) {
-        throw { 
-          status: 500, 
-          message: 'Failed to retrieve created passenger profile', 
-          code: ERROR_CODES.DATABASE_ERROR 
+        throw {
+          status: 500,
+          message: 'Failed to retrieve created passenger profile',
+          code: ERROR_CODES.DATABASE_ERROR
         };
       }
 
@@ -74,10 +74,10 @@ const passengerService = {
     } catch (error) {
       if (error.status) throw error;
       console.error('Create passenger error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to create passenger profile', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to create passenger profile',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   },
@@ -97,10 +97,10 @@ const passengerService = {
       );
 
       if (!passengers || passengers.length === 0) {
-        throw { 
-          status: 404, 
-          message: 'Passenger not found', 
-          code: ERROR_CODES.NOT_FOUND 
+        throw {
+          status: 404,
+          message: 'Passenger not found',
+          code: ERROR_CODES.NOT_FOUND
         };
       }
 
@@ -120,10 +120,10 @@ const passengerService = {
     } catch (error) {
       if (error.status) throw error;
       console.error('Get passenger error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to retrieve passenger profile', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to retrieve passenger profile',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   },
@@ -139,10 +139,10 @@ const passengerService = {
       );
 
       if (!passengers || passengers.length === 0) {
-        throw { 
-          status: 404, 
-          message: 'Passenger not found', 
-          code: ERROR_CODES.NOT_FOUND 
+        throw {
+          status: 404,
+          message: 'Passenger not found',
+          code: ERROR_CODES.NOT_FOUND
         };
       }
 
@@ -161,10 +161,10 @@ const passengerService = {
     } catch (error) {
       if (error.status) throw error;
       console.error('Update passenger error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to update passenger profile', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to update passenger profile',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   }

@@ -14,19 +14,19 @@ const seatService = {
       SELECT S.SeatID
       FROM Flights F
       JOIN AircraftSeats S ON F.AircraftID = S.AircraftID
-      WHERE F.FlightID = :flightId 
+      WHERE F.FlightID = :flightId
         AND S.SeatNumber = :seatNumber
         AND S.Status = 'AVAILABLE'
         AND NOT EXISTS (
           SELECT 1 FROM Tickets T
           JOIN Bookings B ON T.BookingID = B.BookingID
-          WHERE T.FlightID = :flightId 
-            AND T.SeatNumber = :seatNumber 
+          WHERE T.FlightID = :flightId
+            AND T.SeatNumber = :seatNumber
             AND B.Status != 'Cancelled'
         )
     `;
     const params = { flightId, seatNumber };
-    const seats = connection 
+    const seats = connection
       ? (await connection.execute(sql, params)).rows || []
       : await executeQuery(sql, params);
 
@@ -38,15 +38,15 @@ const seatService = {
    */
   getSeatsByFlightId: async (flightId) => {
     const sql = `
-      SELECT 
+      SELECT
         S.SeatID,
         S.SeatNumber,
         S.Class,
-        CASE 
+        CASE
           WHEN S.Status = 'MAINTENANCE' THEN 'MAINTENANCE'
           WHEN EXISTS (
-            SELECT 1 FROM Tickets T 
-            JOIN Bookings B ON T.BookingID = B.BookingID 
+            SELECT 1 FROM Tickets T
+            JOIN Bookings B ON T.BookingID = B.BookingID
             WHERE T.FlightID = F.FlightID AND T.SeatNumber = S.SeatNumber AND B.Status != 'Cancelled'
           ) THEN 'OCCUPIED'
           ELSE 'AVAILABLE'
@@ -66,10 +66,10 @@ const seatService = {
     const available = await seatService.isSeatAvailable(flightId, seatNumber, connection);
 
     if (!available) {
-      throw { 
-        status: 409, 
-        message: `Seat ${seatNumber} is no longer available`, 
-        code: ERROR_CODES.CONFLICT 
+      throw {
+        status: 409,
+        message: `Seat ${seatNumber} is no longer available`,
+        code: ERROR_CODES.CONFLICT
       };
     }
 

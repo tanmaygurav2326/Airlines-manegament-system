@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import api from '../../services/api';
-import { 
-  MessageSquare, 
-  Star, 
-  Send, 
-  CheckCircle2, 
+import {
+  MessageSquare,
+  Star,
+  Send,
+  CheckCircle2,
   AlertCircle
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -55,7 +55,7 @@ const Feedback = () => {
   return (
     <div className="min-h-screen bg-[#F4F5F7] text-[#172B4D] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto space-y-6">
-        
+
         {/* Header */}
         <div className="text-center space-y-2">
           <div className="bg-[#DEEBFF] text-[#0052CC] p-3 rounded-2xl w-fit mx-auto border border-blue-200">
@@ -87,7 +87,7 @@ const Feedback = () => {
         {/* Feedback Form */}
         {!success && (
           <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
-            
+
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl text-xs flex items-center space-x-2">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
@@ -96,7 +96,7 @@ const Feedback = () => {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-5">
-              
+
               {/* Star Rating Selector */}
               <div>
                 <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { 
-  Plane, 
-  Clock, 
-  Luggage, 
-  ChevronDown, 
-  ChevronUp, 
-  ShieldCheck, 
-  Sparkles, 
+import {
+  Plane,
+  Clock,
+  Luggage,
+  ChevronDown,
+  ChevronUp,
+  ShieldCheck,
+  Sparkles,
   Info,
   CheckCircle2
 } from 'lucide-react';
@@ -96,16 +96,16 @@ const FlightCard = ({
         <div className="flex items-center space-x-2">
           {flight.AVAILABLESEATS !== undefined && (
             <span className={`px-2 py-0.5 rounded-full font-medium ${
-              flight.AVAILABLESEATS > 10 
-                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+              flight.AVAILABLESEATS > 10
+                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                 : 'bg-amber-50 text-amber-700 border border-amber-200'
             }`}>
               {flight.AVAILABLESEATS > 0 ? `${flight.AVAILABLESEATS} seats left` : 'Sold out'}
             </span>
           )}
           <span className={`px-2.5 py-0.5 rounded-full font-semibold uppercase tracking-wider text-[10px] ${
-            isCancelled 
-              ? 'bg-red-100 text-red-700' 
+            isCancelled
+              ? 'bg-red-100 text-red-700'
               : flight.STATUS === 'Delayed'
               ? 'bg-amber-100 text-amber-800'
               : 'bg-emerald-100 text-emerald-800'
@@ -118,7 +118,7 @@ const FlightCard = ({
       {/* Main Flight Segment */}
       <div className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-          
+
           {/* Departure Column */}
           <div className="md:col-span-3 text-left">
             <div className="text-2xl sm:text-3xl font-bold text-[#091E42] tracking-tight">

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  ShieldCheck, 
-  MapPin, 
-  Mail, 
-  Phone, 
+import {
+  ShieldCheck,
+  MapPin,
+  Mail,
+  Phone,
   ExternalLink,
   Clock,
   Sparkles
@@ -18,10 +18,10 @@ const Footer = () => {
       <div className="border-b border-slate-800 py-8 px-4 sm:px-6 lg:px-8 bg-[#071735]">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-sm">
           <div className="flex items-center space-x-3">
-            <img 
-              src={logoImg} 
-              alt="Enum Airways" 
-              className="h-9 w-9 rounded-lg object-cover border border-slate-700" 
+            <img
+              src={logoImg}
+              alt="Enum Airways"
+              className="h-9 w-9 rounded-lg object-cover border border-slate-700"
               onError={(e) => {
                 e.target.onerror = null;
                 e.target.src = '/logo.jpg';
@@ -55,7 +55,7 @@ const Footer = () => {
       {/* Main Footer Links */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-10">
-          
+
           {/* Brand & About */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center space-x-2">
@@ -120,8 +120,8 @@ const Footer = () => {
                 <Mail className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" />
                 <div>
                   <span className="block text-slate-300 font-medium">Support Desk:</span>
-                  <a 
-                    href="mailto:tanmaygurav2326@gmail.com?subject=Enum%20Airways%20Customer%20Support" 
+                  <a
+                    href="mailto:tanmaygurav2326@gmail.com?subject=Enum%20Airways%20Customer%20Support"
                     className="text-blue-400 hover:text-blue-300 font-medium inline-flex items-center gap-1"
                     title="Click to write to customer support"
                   >

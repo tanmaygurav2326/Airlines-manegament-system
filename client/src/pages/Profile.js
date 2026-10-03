@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
-import { 
-  User, 
-  Mail, 
-  Save, 
-  CheckCircle2, 
+import {
+  User,
+  Mail,
+  Save,
+  CheckCircle2,
   AlertCircle,
   ShieldCheck,
   Award,
@@ -85,7 +85,7 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-[#F4F5F7] text-[#172B4D] py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto space-y-6">
-        
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-200 gap-4">
           <div>
@@ -118,7 +118,7 @@ const Profile = () => {
 
         {/* Profile Card */}
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
-          
+
           {/* Account Overview */}
           <div className="flex items-center space-x-4 pb-6 border-b border-slate-100">
             <div className="w-16 h-16 rounded-2xl bg-[#0052CC] text-white flex items-center justify-center font-extrabold text-2xl shadow-md shadow-blue-500/20">

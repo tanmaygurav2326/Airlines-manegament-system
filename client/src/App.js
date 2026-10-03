@@ -30,8 +30,6 @@ import Profile from './pages/Profile';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminFlights from './pages/admin/AdminFlights';
 
-import './App.css';
-
 function App() {
   return (
     <AuthProvider>

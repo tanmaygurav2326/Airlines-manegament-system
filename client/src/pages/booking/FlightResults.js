@@ -4,10 +4,10 @@ import api from '../../services/api';
 import FlightCard from '../../components/flights/FlightCard';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { useCurrency } from '../../context/CurrencyContext';
-import { 
-  Plane, 
-  ArrowRight, 
-  SlidersHorizontal, 
+import {
+  Plane,
+  ArrowRight,
+  SlidersHorizontal,
   Calendar,
   AlertCircle,
   ArrowUpDown,
@@ -65,7 +65,7 @@ const FlightResults = () => {
             const allRes = await api.get('/flights');
             const allList = Array.isArray(allRes.data) ? allRes.data : [];
             // Filter by route if possible, else show all
-            const routeMatches = allList.filter(f => 
+            const routeMatches = allList.filter(f =>
               (f.DEPARTUREAIRPORT === from || f.DEPARTURECITY === from) &&
               (f.ARRIVALAIRPORT === to || f.ARRIVALCITY === to)
             );
@@ -137,7 +137,7 @@ const FlightResults = () => {
   return (
     <div className="min-h-screen bg-[#F4F5F7] text-[#172B4D] py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-6">
-        
+
         {/* Route Summary & Modification Header */}
         <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-4">
@@ -183,7 +183,7 @@ const FlightResults = () => {
 
         {/* Main Search Results Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          
+
           {/* Left Sidebar: Filters */}
           <div className="lg:col-span-3 space-y-4">
             <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-6">
@@ -286,7 +286,7 @@ const FlightResults = () => {
 
           {/* Right Main Column: Flight Cards List */}
           <div className="lg:col-span-9 space-y-4">
-            
+
             {/* Sorting Toolbar */}
             <div className="bg-white border border-slate-200 rounded-xl px-4 py-2.5 shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs">
               <div className="flex items-center space-x-2 text-slate-500 font-medium">

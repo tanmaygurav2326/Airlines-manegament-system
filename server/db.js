@@ -93,8 +93,8 @@ async function getConnection() {
   }
 }
 
-module.exports = { 
-  initializeDatabase, 
+module.exports = {
+  initializeDatabase,
   executeQuery,
   getConnection  // For Phase 5 (booking transactions)
 };

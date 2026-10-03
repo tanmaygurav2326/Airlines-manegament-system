@@ -4,12 +4,12 @@ import api from '../../services/api';
 import { useCurrency } from '../../context/CurrencyContext';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import StatusBadge from '../../components/ui/StatusBadge';
-import { 
-  Calendar, 
-  Plane, 
-  ExternalLink, 
-  XCircle, 
-  AlertCircle, 
+import {
+  Calendar,
+  Plane,
+  ExternalLink,
+  XCircle,
+  AlertCircle,
   CheckCircle2,
   Ticket
 } from 'lucide-react';
@@ -70,7 +70,7 @@ const MyBookings = () => {
   return (
     <div className="min-h-screen bg-[#F4F5F7] text-[#172B4D] py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto space-y-6">
-        
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-200 gap-4">
           <div>

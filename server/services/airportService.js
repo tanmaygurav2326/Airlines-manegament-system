@@ -13,7 +13,7 @@ const airportService = {
   getAllAirports: async () => {
     try {
       const airports = await executeQuery(
-        `SELECT 
+        `SELECT
           AirportCode,
           AirportName,
           City,
@@ -26,10 +26,10 @@ const airportService = {
       return airports;
     } catch (error) {
       console.error('Get all airports error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to retrieve airports', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to retrieve airports',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   },
@@ -42,15 +42,15 @@ const airportService = {
   getAirportByCode: async (airportCode) => {
     try {
       if (!airportCode || airportCode.length !== 3) {
-        throw { 
-          status: 400, 
-          message: 'Invalid airport code format (must be 3 letters)', 
-          code: ERROR_CODES.INVALID_INPUT 
+        throw {
+          status: 400,
+          message: 'Invalid airport code format (must be 3 letters)',
+          code: ERROR_CODES.INVALID_INPUT
         };
       }
 
       const airports = await executeQuery(
-        `SELECT 
+        `SELECT
           AirportCode,
           AirportName,
           City,
@@ -61,10 +61,10 @@ const airportService = {
       );
 
       if (!airports || airports.length === 0) {
-        throw { 
-          status: 404, 
-          message: `Airport with code ${airportCode} not found`, 
-          code: ERROR_CODES.NOT_FOUND 
+        throw {
+          status: 404,
+          message: `Airport with code ${airportCode} not found`,
+          code: ERROR_CODES.NOT_FOUND
         };
       }
 
@@ -72,10 +72,10 @@ const airportService = {
     } catch (error) {
       if (error.status) throw error;
       console.error('Get airport by code error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to retrieve airport', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to retrieve airport',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   },
@@ -88,17 +88,17 @@ const airportService = {
   searchAirports: async (query) => {
     try {
       if (!query || query.trim().length === 0) {
-        throw { 
-          status: 400, 
-          message: 'Search query is required', 
-          code: ERROR_CODES.INVALID_INPUT 
+        throw {
+          status: 400,
+          message: 'Search query is required',
+          code: ERROR_CODES.INVALID_INPUT
         };
       }
 
       const searchTerm = `%${query.toUpperCase()}%`;
 
       const airports = await executeQuery(
-        `SELECT 
+        `SELECT
           AirportCode,
           AirportName,
           City,
@@ -115,10 +115,10 @@ const airportService = {
     } catch (error) {
       if (error.status) throw error;
       console.error('Search airports error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Airport search failed', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Airport search failed',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   }

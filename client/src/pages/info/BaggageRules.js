@@ -5,7 +5,7 @@ const BaggageRules = () => {
   return (
     <div className="min-h-screen bg-[#F8F9FA] text-[#172B4D] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-8">
-        
+
         {/* Header */}
         <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-3">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-bold bg-[#DEEBFF] text-[#0052CC]">
@@ -22,7 +22,7 @@ const BaggageRules = () => {
 
         {/* Content Cards */}
         <div className="space-y-6 text-sm text-slate-700 leading-relaxed">
-          
+
           {/* Cabin Baggage Table */}
           <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
             <div className="flex items-center space-x-3 text-[#0052CC]">

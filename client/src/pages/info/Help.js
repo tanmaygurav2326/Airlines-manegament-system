@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  HelpCircle, 
-  Phone, 
-  Mail, 
-  MapPin, 
-  ChevronDown, 
-  ChevronUp, 
-  Luggage, 
+import {
+  HelpCircle,
+  Phone,
+  Mail,
+  MapPin,
+  ChevronDown,
+  ChevronUp,
+  Luggage,
   Plane,
   ExternalLink,
   MessageSquare
@@ -46,7 +46,7 @@ const Help = () => {
   return (
     <div className="min-h-screen bg-[#F4F5F7] text-[#172B4D] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-10">
-        
+
         {/* Header */}
         <div className="text-center space-y-3">
           <span className="text-xs font-bold uppercase tracking-wider text-[#0052CC]">24/7 Customer Care</span>
@@ -58,7 +58,7 @@ const Help = () => {
 
         {/* Contact Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
+
           {/* Card 1: Helpline */}
           <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-3">
             <div className="bg-[#DEEBFF] text-[#0052CC] p-3 rounded-xl w-fit">
@@ -66,8 +66,8 @@ const Help = () => {
             </div>
             <h3 className="font-bold text-base text-[#091E42]">Toll-Free Helpline</h3>
             <p className="text-xs text-slate-500">Available 24 hours daily for urgent flight inquiries.</p>
-            <a 
-              href="tel:8999147294" 
+            <a
+              href="tel:8999147294"
               className="text-lg font-extrabold text-[#0052CC] hover:underline block pt-2"
             >
               8999147294
@@ -82,8 +82,8 @@ const Help = () => {
             <h3 className="font-bold text-base text-[#091E42]">Email Customer Desk</h3>
             <p className="text-xs text-slate-500">Write to our ticketing and guest relations office.</p>
             <div className="pt-2">
-              <a 
-                href="mailto:tanmaygurav2326@gmail.com?subject=Enum%20Airways%20Customer%20Support" 
+              <a
+                href="mailto:tanmaygurav2326@gmail.com?subject=Enum%20Airways%20Customer%20Support"
                 className="inline-flex items-center gap-1.5 bg-[#0052CC] hover:bg-[#003A8C] text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm"
                 title="Click to open your mail client"
               >

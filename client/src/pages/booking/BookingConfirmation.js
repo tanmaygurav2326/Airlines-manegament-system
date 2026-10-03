@@ -3,9 +3,9 @@ import { useParams, Link } from 'react-router-dom';
 import api from '../../services/api';
 import { useCurrency } from '../../context/CurrencyContext';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
-import { 
-  CheckCircle2, 
-  Printer, 
+import {
+  CheckCircle2,
+  Printer,
   Plane
 } from 'lucide-react';
 import logoImg from '../../assets/logo.jpg';
@@ -76,7 +76,7 @@ const BookingConfirmation = () => {
   return (
     <div className="min-h-screen bg-[#F4F5F7] text-[#172B4D] py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto space-y-8">
-        
+
         {/* Success Banner */}
         <div className="text-center space-y-2">
           <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto border-2 border-emerald-200 shadow-sm animate-fade-in-up">
@@ -90,14 +90,14 @@ const BookingConfirmation = () => {
 
         {/* Digital Boarding Pass Card */}
         <div className="bg-white rounded-3xl border border-slate-200 shadow-lg overflow-hidden animate-fade-in-up">
-          
+
           {/* Top Pass Header */}
           <div className="bg-[#0052CC] text-white p-6 sm:p-8 flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center space-x-3.5">
-              <img 
-                src={logoImg} 
-                alt="Enum Airways" 
-                className="h-12 w-12 rounded-xl object-cover border border-white/20" 
+              <img
+                src={logoImg}
+                alt="Enum Airways"
+                className="h-12 w-12 rounded-xl object-cover border border-white/20"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = '/logo.jpg';

@@ -18,18 +18,18 @@ const paymentService = {
 
       // Validate input
       if (!bookingId || !amount || !paymentMethod) {
-        throw { 
-          status: 400, 
-          message: 'bookingId, amount, and paymentMethod are required', 
-          code: ERROR_CODES.INVALID_INPUT 
+        throw {
+          status: 400,
+          message: 'bookingId, amount, and paymentMethod are required',
+          code: ERROR_CODES.INVALID_INPUT
         };
       }
 
       if (amount <= 0) {
-        throw { 
-          status: 400, 
-          message: 'Amount must be greater than 0', 
-          code: ERROR_CODES.INVALID_INPUT 
+        throw {
+          status: 400,
+          message: 'Amount must be greater than 0',
+          code: ERROR_CODES.INVALID_INPUT
         };
       }
 
@@ -40,10 +40,10 @@ const paymentService = {
       );
 
       if (!bookings || bookings.length === 0) {
-        throw { 
-          status: 404, 
-          message: 'Booking not found', 
-          code: ERROR_CODES.NOT_FOUND 
+        throw {
+          status: 404,
+          message: 'Booking not found',
+          code: ERROR_CODES.NOT_FOUND
         };
       }
 
@@ -81,10 +81,10 @@ const paymentService = {
       );
 
       if (!payments || payments.length === 0) {
-        throw { 
-          status: 500, 
-          message: 'Failed to record payment', 
-          code: ERROR_CODES.DATABASE_ERROR 
+        throw {
+          status: 500,
+          message: 'Failed to record payment',
+          code: ERROR_CODES.DATABASE_ERROR
         };
       }
 
@@ -103,10 +103,10 @@ const paymentService = {
     } catch (error) {
       if (error.status) throw error;
       console.error('Process payment error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Payment processing failed', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Payment processing failed',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   },
@@ -126,10 +126,10 @@ const paymentService = {
       );
 
       if (!payments || payments.length === 0) {
-        throw { 
-          status: 404, 
-          message: 'Payment not found', 
-          code: ERROR_CODES.NOT_FOUND 
+        throw {
+          status: 404,
+          message: 'Payment not found',
+          code: ERROR_CODES.NOT_FOUND
         };
       }
 
@@ -147,10 +147,10 @@ const paymentService = {
     } catch (error) {
       if (error.status) throw error;
       console.error('Get payment details error:', error.message);
-      throw { 
-        status: 500, 
-        message: 'Failed to retrieve payment', 
-        code: ERROR_CODES.DATABASE_ERROR 
+      throw {
+        status: 500,
+        message: 'Failed to retrieve payment',
+        code: ERROR_CODES.DATABASE_ERROR
       };
     }
   }
